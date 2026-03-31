@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Restaurant Chain System — Full Case Study</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --ink:       #1a1916;
@@ -722,9 +722,527 @@ code { font-family: var(--mono); font-size: 12px; background: var(--paper3); pad
   background: var(--paper2);
 }
 .page-footer span { color: var(--rust); }
+
+/* ── OOP THINKING SHELL ── */
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #010d2e 0%, #01278b 50%, #0d3fa6 100%);
+  overflow: hidden;
+  height: 100vh;
+}
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,0.2);
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #01278b, #2558c4, #4d8bff);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 0 15px rgba(1,39,139,0.6), 0 0 30px rgba(1,39,139,0.3);
+  border-radius: 0 3px 3px 0;
+  width: 0%;
+}
+@keyframes gradientShift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+#sectionLabel {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-family: 'JetBrains Mono', monospace;
+  z-index: 999;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.presentation-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.slide {
+  display: none;
+  width: 95%;
+  max-width: 1100px;
+  height: 85vh;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  padding: 45px 55px;
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c7d2fe #f0f4ff;
+}
+.slide::-webkit-scrollbar { width: 5px; }
+.slide::-webkit-scrollbar-track { background: #f0f4ff; border-radius: 10px; }
+.slide::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 10px; }
+.slide::-webkit-scrollbar-thumb:hover { background: #01278b; }
+.slide.active { display: block; }
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px) scale(0.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px) scale(0.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.slide.animate-right { animation: slideInRight 0.38s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide.animate-left { animation: slideInLeft 0.38s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide.active > * { animation: fadeIn 0.5s ease both; }
+.slide.active > *:nth-child(1) { animation-delay: 0.05s; }
+.slide.active > *:nth-child(2) { animation-delay: 0.10s; }
+.slide.active > *:nth-child(3) { animation-delay: 0.15s; }
+.slide.active > *:nth-child(4) { animation-delay: 0.20s; }
+.slide.active > *:nth-child(5) { animation-delay: 0.25s; }
+.slide.active > *:nth-child(6) { animation-delay: 0.30s; }
+.slide-logo {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  max-width: 100px;
+  height: auto;
+  padding: 16px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+}
+#dotBar {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 998;
+  max-width: 280px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.dot.active {
+  background: white;
+  width: 18px;
+  border-radius: 3px;
+}
+.touch-hint {
+  position: fixed;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  letter-spacing: .1em;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+  z-index: 997;
+}
+.controls {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+}
+.controls button {
+  width: 140px;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: #fff;
+  color: #01278b;
+  border: 1.5px solid #01278b;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+.controls button:hover:not(:disabled) {
+  background: #01278b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+.controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(255,255,255,0.6);
+  color: #888;
+  border-color: #ccc;
+}
+.slide-number-inline {
+  color: #01278b;
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 90px;
+  text-align: center;
+  padding: 11px 18px;
+  border-radius: 30px;
+  background: #fff;
+  border: 2px solid #01278b;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+.toolbar {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toolbar button {
+  background: white;
+  color: #01278b;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.toolbar button:hover {
+  background: #01278b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+.toolbar button.laser-active { background: #ff0000; color: white; }
+.slide-menu {
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 1003;
+  display: none;
+  width: 280px;
+}
+.slide-menu.active { display: block; }
+.slide-menu-header {
+  padding: 15px;
+  background: linear-gradient(135deg, #011d6b, #01278b);
+  color: white;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.slide-menu-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  box-shadow: none;
+}
+.slide-search { padding: 10px 15px; border-bottom: 2px solid #e9ecef; }
+.slide-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background: white;
+  outline: none;
+}
+.slide-search input:focus { border-color: #01278b; }
+.slide-menu-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+.slide-menu-item:hover { background: #f8f9fa; padding-left: 20px; }
+.slide-menu-item.current { background: #e7f3ff; border-left: 4px solid #01278b; font-weight: 600; }
+.menu-num { display: none; }
+.laser-pointer {
+  display: none;
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255,40,40,0.85);
+  box-shadow: 0 0 8px 4px rgba(255,40,40,0.4);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  z-index: 9999;
+}
+.cover-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(1,39,139,0.07);
+  border: 1.5px solid rgba(1,39,139,0.25);
+  color: #01278b;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  padding: 7px 16px;
+  border-radius: 100px;
+  margin-bottom: 22px;
+}
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: calc(85vh - 90px);
+  padding: 40px 0;
+}
+.center-content h1 {
+  font-size: 56px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #011d6b 0%, #01278b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.cover-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #01278b, #4d8bff);
+  margin: 24px auto;
+  border-radius: 2px;
+}
+.subtitle {
+  font-size: 17px;
+  color: #666;
+  margin-bottom: 18px;
+}
+.hero-steps {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 18px;
+}
+.hero-step-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(1,39,139,0.06);
+  border: 1px solid rgba(1,39,139,0.2);
+  border-radius: 9px;
+  padding: 7px 13px;
+  font-size: 13px;
+  color: #333;
+}
+.hero-step-pill .num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.restaurant-slide .sec {
+  padding: 0;
+  border-bottom: none;
+}
+.restaurant-slide .wrap {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.restaurant-slide .sec-header { margin-bottom: 28px; }
+.restaurant-slide .sec-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 34px;
+  color: #333;
+  margin-bottom: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.restaurant-slide .sec-sub {
+  font-size: 17px;
+  color: #666;
+  margin-bottom: 18px;
+  font-style: normal;
+  font-family: 'Inter', sans-serif;
+}
+.restaurant-slide .sec-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #4d8bff;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.restaurant-slide .sec-step::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 2px;
+  background: #4d8bff;
+}
+.source-hidden { display: none !important; }
+.diagram-board {
+  background: #f5f8ff;
+  border: 1px solid #d1d9ff;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 18px 0;
+}
+.diagram-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.diagram-node {
+  background: #fff;
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(1,39,139,0.06);
+}
+.diagram-node h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #0d1b4b;
+}
+.diagram-node p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4a5878;
+}
+.diagram-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+.diagram-link {
+  background: #fff;
+  border: 1px dashed #b8c6f5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #44506e;
+}
+.diagram-link code {
+  font-size: 12px;
+}
+.summary-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.summary-card {
+  background: #f0f4ff;
+  border: 1px solid #d4deff;
+  border-radius: 12px;
+  padding: 14px;
+}
+.summary-card h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: #0d1b4b;
+}
+.summary-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #4a5878;
+  line-height: 1.6;
+}
+@media (max-width: 720px) {
+  .slide { padding: 30px 20px; }
+  .toolbar { right: 10px; }
+}
 </style>
 </head>
 <body>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div id="sectionLabel"></div>
+<div class="presentation-container" id="presentationContainer"></div>
+
+<div class="controls">
+  <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+  <div class="slide-number-inline" id="slideNumber">1 / 1</div>
+  <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+</div>
+
+<div id="dotBar"></div>
+<div class="touch-hint" id="touchHint">SWIPE TO NAVIGATE</div>
+
+<div class="toolbar">
+  <button id="slideMenuBtn" onclick="toggleSlideMenu()">📋 Menu</button>
+  <button id="laserBtn" onclick="toggleLaser()">🔴 Laser</button>
+  <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+</div>
+
+<div class="laser-pointer" id="laserPointer"></div>
+
+<div class="slide-menu" id="slideMenu">
+  <div class="slide-menu-header">
+    <span>Slide Navigation</span>
+    <button class="slide-menu-close" onclick="toggleSlideMenu()">×</button>
+  </div>
+  <div class="slide-search">
+    <input type="text" id="slideSearchInput" placeholder="Search slides..." oninput="filterSlides()"/>
+  </div>
+  <div id="slideMenuItems"></div>
+</div>
 
 <!-- ══ COVER ══ -->
 <div class="cover">
@@ -1951,25 +2469,49 @@ code { font-family: var(--mono); font-size: 12px; background: var(--paper3); pad
 
   </div><!-- entity-grid -->
 
-  <div class="divider"><div class="divider-label">Key Relationships Summary</div></div>
+  <div class="divider"><div class="divider-label">ERD Relationship View</div></div>
 
-  <div style="overflow-x:auto;">
-  <table class="erd-rel-table">
-    <thead><tr><th>Entity A</th><th>Relationship</th><th>Entity B</th><th>Type</th><th>Note</th></tr></thead>
-    <tbody>
-      <tr><td>Branch</td><td>managed by</td><td>Employee</td><td><code>1 : 1</code></td><td>Manager is an Employee with position = Branch Manager</td></tr>
-      <tr><td>Employee</td><td>works shifts at</td><td>Branch</td><td><code>M : N</code></td><td>Via ShiftSchedule (associative entity)</td></tr>
-      <tr><td>Branch</td><td>overrides pricing of</td><td>MenuItem</td><td><code>M : N</code></td><td>Via BranchMenuItem (associative entity)</td></tr>
-      <tr><td>Customer</td><td>places</td><td>Order</td><td><code>1 : N</code></td><td>Customer can have many orders</td></tr>
-      <tr><td>Order</td><td>contains</td><td>MenuItem</td><td><code>M : N</code></td><td>Via OrderItem (associative entity) — <em>same item can appear in many orders</em></td></tr>
-      <tr><td>OrderItem</td><td>selects</td><td>AddOn</td><td><code>M : N</code></td><td>Via OrderItemAddOn with snapshot name and price</td></tr>
-      <tr><td>MenuItem</td><td>uses</td><td>Ingredient</td><td><code>M : N</code></td><td>Via Recipe (associative entity)</td></tr>
-      <tr><td>Branch</td><td>stocks</td><td>Ingredient</td><td><code>M : N</code></td><td>Via Inventory (per-branch stock levels)</td></tr>
-      <tr><td>Order</td><td>has</td><td>DeliveryRecord</td><td><code>1 : 1</code></td><td>Only for Delivery-type orders</td></tr>
-      <tr><td>Customer</td><td>submits</td><td>Feedback</td><td><code>1 : N</code></td><td>One per completed order only</td></tr>
-      <tr><td>Employee</td><td>may have</td><td>DeliveryProfile</td><td><code>1 : 0..1</code></td><td>Composition preferred over inheritance for delivery-specific data</td></tr>
-    </tbody>
-  </table>
+  <div class="diagram-board">
+    <div class="diagram-grid">
+      <div class="diagram-node">
+        <h4>Branch</h4>
+        <p>Core operational unit. Connected to employees, orders, inventory, branch menu overrides, and shift schedules.</p>
+      </div>
+      <div class="diagram-node">
+        <h4>Employee</h4>
+        <p>Belongs to a main branch, may work across branches through shifts, and may compose one delivery profile.</p>
+      </div>
+      <div class="diagram-node">
+        <h4>Customer</h4>
+        <p>Places many orders and may submit feedback after a completed order.</p>
+      </div>
+      <div class="diagram-node">
+        <h4>MenuItem</h4>
+        <p>Global catalogue item. Connected to add-ons, recipes, and branch-specific overrides.</p>
+      </div>
+      <div class="diagram-node">
+        <h4>Order</h4>
+        <p>Belongs to one branch and one customer. Contains many order items and optionally one delivery record.</p>
+      </div>
+      <div class="diagram-node">
+        <h4>Operational Entities</h4>
+        <p><code>OrderItem</code>, <code>Recipe</code>, <code>Inventory</code>, <code>ShiftSchedule</code>, <code>Feedback</code>, and delivery entities hold the M:N and process details.</p>
+      </div>
+    </div>
+
+    <div class="diagram-links">
+      <div class="diagram-link"><code>Branch 1 ── manages ── 1 Employee</code> where employee position = Branch Manager.</div>
+      <div class="diagram-link"><code>Employee M ── works at ── M Branch</code> through <code>ShiftSchedule</code>.</div>
+      <div class="diagram-link"><code>Branch M ── offers ── M MenuItem</code> through <code>BranchMenuItem</code>.</div>
+      <div class="diagram-link"><code>Customer 1 ── places ── N Order</code>.</div>
+      <div class="diagram-link"><code>Order M ── contains ── M MenuItem</code> through <code>OrderItem</code>.</div>
+      <div class="diagram-link"><code>OrderItem M ── selects ── M AddOn</code> through <code>OrderItemAddOn</code>.</div>
+      <div class="diagram-link"><code>MenuItem M ── uses ── M Ingredient</code> through <code>Recipe</code>.</div>
+      <div class="diagram-link"><code>Branch M ── stocks ── M Ingredient</code> through <code>Inventory</code>.</div>
+      <div class="diagram-link"><code>Order 1 ── has ── 0..1 DeliveryRecord</code> only for delivery orders.</div>
+      <div class="diagram-link"><code>Employee 1 ── composes ── 0..1 DeliveryProfile</code> to avoid unnecessary inheritance.</div>
+      <div class="diagram-link"><code>Customer 1 ── submits ── N Feedback</code> but only for completed orders.</div>
+    </div>
   </div>
 
   <div class="box box-green" style="margin-top:28px;">
@@ -2002,6 +2544,47 @@ code { font-family: var(--mono); font-size: 12px; background: var(--paper3); pad
   <div class="box box-tip">
     <div class="box-label">🧠 Design Direction</div>
     <p>The class diagram will use <strong>interfaces and composition in most places</strong>. Delivery-specific data will be composed with <code>Employee</code>, not modeled through deep inheritance. Small factory methods may be shown as static creation methods on entities or dedicated lightweight factory classes only where they make creation cleaner.</p>
+  </div>
+
+  <div class="divider"><div class="divider-label">Visual Class Diagram View</div></div>
+
+  <div class="diagram-board">
+    <div class="diagram-grid">
+      <div class="diagram-node">
+        <h4>Core Classes</h4>
+        <p><code>Branch</code>, <code>Employee</code>, <code>Customer</code>, <code>MenuItem</code>, <code>Order</code></p>
+      </div>
+      <div class="diagram-node">
+        <h4>Order Layer</h4>
+        <p><code>OrderItem</code>, <code>AddOn</code>, <code>OrderItemAddOn</code></p>
+      </div>
+      <div class="diagram-node">
+        <h4>Branch Operations</h4>
+        <p><code>BranchMenuItem</code>, <code>ShiftSchedule</code>, <code>InventoryItem</code></p>
+      </div>
+      <div class="diagram-node">
+        <h4>Kitchen Support</h4>
+        <p><code>Ingredient</code>, <code>RecipeItem</code></p>
+      </div>
+      <div class="diagram-node">
+        <h4>Delivery Support</h4>
+        <p><code>DeliveryProfile</code>, <code>DeliveryRecord</code></p>
+      </div>
+      <div class="diagram-node">
+        <h4>Boundary Abstractions</h4>
+        <p><code>IFileRepository&lt;T&gt;</code>, <code>ISeeder</code>, small factory methods, and UI formatter contracts only where needed.</p>
+      </div>
+    </div>
+
+    <div class="diagram-links">
+      <div class="diagram-link"><code>Branch</code> aggregates employees, orders, inventory items, and branch menu items.</div>
+      <div class="diagram-link"><code>Customer ──&gt; Order</code> and <code>Order ──&gt; OrderItem</code> form the main transaction flow.</div>
+      <div class="diagram-link"><code>OrderItem</code> references <code>MenuItem</code> and composes selected <code>OrderItemAddOn</code> records.</div>
+      <div class="diagram-link"><code>MenuItem</code> composes add-ons and recipe items; no deep inheritance is introduced.</div>
+      <div class="diagram-link"><code>Employee</code> optionally composes <code>DeliveryProfile</code>; this replaces a delivery-staff subclass hierarchy.</div>
+      <div class="diagram-link"><code>Order</code> optionally composes <code>DeliveryRecord</code> and may later connect to <code>Feedback</code> after completion.</div>
+      <div class="diagram-link"><code>Infrastructure</code> implements repository/seeding interfaces, while <code>UI</code> consumes services directly instead of becoming a heavy architecture layer.</div>
+    </div>
   </div>
 
   <div class="uc-list">
@@ -2322,16 +2905,14 @@ code { font-family: var(--mono); font-size: 12px; background: var(--paper3); pad
 </footer>
 
 <script>
-// ── User Story Filter ──
 function filterUS(actor, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('#usList .us-card').forEach(card => {
-    card.style.display = (actor === 'all' || card.dataset.actor === actor) ? 'block' : 'none';
+    card.style.display = actor === 'all' || card.dataset.actor === actor ? 'block' : 'none';
   });
 }
 
-// ── Collapsible Card Toggle ──
 function toggleCard(header) {
   const body = header.nextElementSibling;
   const chevron = header.querySelector('.uc-chevron');
@@ -2341,7 +2922,7 @@ function toggleCard(header) {
   document.querySelectorAll('.uc-header').forEach(h => h.classList.remove('open'));
   if (!isOpen) {
     body.classList.add('open');
-    chevron.classList.add('open');
+    if (chevron) chevron.classList.add('open');
     header.classList.add('open');
   }
 }
@@ -2354,19 +2935,248 @@ function togglePlan(header) {
   toggleCard(header);
 }
 
-// ── Active Nav on Scroll ──
-const secs = document.querySelectorAll('.sec');
-const navLinks = document.querySelectorAll('.nav-a');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(n => n.classList.remove('active'));
-      const link = document.querySelector(`.nav-a[href="#${e.target.id}"]`);
-      if (link) link.classList.add('active');
-    }
+let currentSlide = 0;
+let lastDirection = 1;
+let slides = [];
+let sectionMap = {};
+let laserOn = false;
+
+function buildPresentation() {
+  const container = document.getElementById('presentationContainer');
+  const cover = document.querySelector('.cover');
+  const nav = document.querySelector('.sticky-nav');
+  const sections = Array.from(document.querySelectorAll('.sec'));
+  const footer = document.querySelector('.page-footer');
+
+  if (!cover || sections.length === 0) {
+    return;
+  }
+
+  const eyebrow = cover.querySelector('.cover-eyebrow') ? cover.querySelector('.cover-eyebrow').textContent.trim() : 'OOP Case Study';
+  const title = cover.querySelector('h1') ? cover.querySelector('h1').innerHTML : 'Restaurant Chain Management System';
+  const subtitle = cover.querySelector('.cover-sub') ? cover.querySelector('.cover-sub').innerHTML : '';
+  const tags = Array.from(cover.querySelectorAll('.cover-tag')).map(tag => tag.textContent.trim());
+
+  const coverSlide = document.createElement('div');
+  coverSlide.className = 'slide active';
+  coverSlide.innerHTML = `
+    <img src="data:image/png;base64,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" alt="Route Training Center Logo" class="slide-logo">
+    <div class="center-content">
+      <div class="cover-badge">🍽️ ${eyebrow}</div>
+      <h1>${title}</h1>
+      <div class="cover-divider"></div>
+      <p class="subtitle">${subtitle}</p>
+      <div class="hero-steps">
+        ${tags.map((tag, index) => `<div class="hero-step-pill"><span class="num">${index + 1}</span>${tag}</div>`).join('')}
+      </div>
+    </div>
+  `;
+  container.appendChild(coverSlide);
+  sectionMap[0] = 'Cover';
+
+  sections.forEach((section, index) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide restaurant-slide';
+    slide.innerHTML = section.innerHTML;
+    container.appendChild(slide);
+    const titleEl = slide.querySelector('.sec-title, h2, h1');
+    sectionMap[index + 1] = titleEl ? titleEl.textContent.trim() : `Slide ${index + 2}`;
   });
-}, { threshold: 0.25 });
-secs.forEach(s => obs.observe(s));
+
+  if (footer) {
+    const footerSlide = document.createElement('div');
+    footerSlide.className = 'slide restaurant-slide';
+    footerSlide.innerHTML = `
+      <div class="sec-header">
+        <div class="sec-step">Final Summary</div>
+        <div class="sec-title">Case Study Summary</div>
+        <div class="sec-sub">A short recap of the final design direction before implementation starts.</div>
+      </div>
+      <div class="summary-list">
+        <div class="summary-card">
+          <h4>What the system covers</h4>
+          <p>Branches, staff, customers, menu catalogue, orders, inventory, delivery, and feedback are all modeled as one coherent restaurant-chain domain.</p>
+        </div>
+        <div class="summary-card">
+          <h4>Architecture choice</h4>
+          <p>The solution stays intentionally small: <code>Core</code>, <code>Infrastructure</code>, and <code>UI</code>, with clean responsibilities and no unnecessary complexity.</p>
+        </div>
+        <div class="summary-card">
+          <h4>Modeling style</h4>
+          <p>Composition is preferred over inheritance, interfaces are used at boundaries, and factory methods remain simple and lightweight.</p>
+        </div>
+        <div class="summary-card">
+          <h4>Important implementation note</h4>
+          <p>We will use the <code>UI</code> project directly for menus and console interaction, but this document does <strong>not</strong> implement the UI itself. It only defines the plan and structure.</p>
+        </div>
+      </div>
+      ${footer.outerHTML}
+    `;
+    container.appendChild(footerSlide);
+    sectionMap[sections.length + 1] = 'Final Summary';
+  }
+
+  [cover, nav, ...sections, footer].forEach(element => {
+    if (element) element.classList.add('source-hidden');
+  });
+
+  slides = Array.from(document.querySelectorAll('.presentation-container .slide'));
+}
+
+function buildDotBar() {
+  const bar = document.getElementById('dotBar');
+  bar.innerHTML = '';
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.title = 'Slide ' + (i + 1);
+    dot.onclick = () => goToSlideFromDot(i);
+    bar.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentSlide);
+  });
+}
+
+function showSlide(index) {
+  if (!slides.length) return;
+
+  const prev = slides[currentSlide];
+  if (prev) prev.classList.remove('active', 'animate-right', 'animate-left');
+
+  currentSlide = Math.max(0, Math.min(index, slides.length - 1));
+
+  const next = slides[currentSlide];
+  next.classList.remove('animate-right', 'animate-left');
+  void next.offsetWidth;
+  next.classList.add('active', lastDirection > 0 ? 'animate-right' : 'animate-left');
+  next.scrollTop = 0;
+
+  document.getElementById('prevBtn').disabled = currentSlide === 0;
+  document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+  document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${slides.length}`;
+  document.getElementById('progressFill').style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+  document.getElementById('sectionLabel').textContent = sectionMap[currentSlide] || '';
+  updateDots();
+
+  if (currentSlide >= 1) {
+    document.getElementById('touchHint').style.opacity = '0';
+  }
+}
+
+function changeSlide(direction) {
+  lastDirection = direction;
+  showSlide(currentSlide + direction);
+}
+
+function goToSlideFromDot(index) {
+  lastDirection = index > currentSlide ? 1 : -1;
+  showSlide(index);
+  document.getElementById('slideMenu').classList.remove('active');
+}
+
+function goToSlide(index) {
+  lastDirection = index > currentSlide ? 1 : -1;
+  showSlide(index);
+  document.getElementById('slideMenu').classList.remove('active');
+}
+
+function toggleSlideMenu() {
+  const menu = document.getElementById('slideMenu');
+  menu.classList.toggle('active');
+  if (menu.classList.contains('active')) {
+    buildSlideMenu();
+  }
+}
+
+function buildSlideMenu() {
+  const query = (document.getElementById('slideSearchInput').value || '').toLowerCase();
+  const menuContainer = document.getElementById('slideMenuItems');
+  menuContainer.innerHTML = '';
+  slides.forEach((slide, index) => {
+    const heading = slide.querySelector('.sec-title, h1, h2');
+    const title = heading ? heading.textContent.trim() : `Slide ${index + 1}`;
+    if (query && !title.toLowerCase().includes(query)) return;
+    const item = document.createElement('div');
+    item.className = 'slide-menu-item' + (index === currentSlide ? ' current' : '');
+    item.textContent = title;
+    item.onclick = () => goToSlide(index);
+    menuContainer.appendChild(item);
+  });
+}
+
+function filterSlides() {
+  buildSlideMenu();
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+const laserPointer = document.getElementById('laserPointer');
+const laserBtn = document.getElementById('laserBtn');
+
+function toggleLaser() {
+  laserOn = !laserOn;
+  laserPointer.style.display = laserOn ? 'block' : 'none';
+  laserBtn.classList.toggle('laser-active', laserOn);
+  document.body.style.cursor = laserOn ? 'none' : '';
+}
+
+document.addEventListener('mousemove', event => {
+  if (laserOn) {
+    laserPointer.style.left = event.clientX + 'px';
+    laserPointer.style.top = event.clientY + 'px';
+  }
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'ArrowRight' || event.key === ' ') {
+    event.preventDefault();
+    changeSlide(1);
+  }
+  if (event.key === 'ArrowLeft') {
+    event.preventDefault();
+    changeSlide(-1);
+  }
+  if (event.key === 'Home') {
+    lastDirection = -1;
+    showSlide(0);
+  }
+  if (event.key === 'End') {
+    lastDirection = 1;
+    showSlide(slides.length - 1);
+  }
+  if (event.key === 'f' || event.key === 'F') toggleFullscreen();
+  if (event.key === 'l' || event.key === 'L') toggleLaser();
+  if (event.key === 'm' || event.key === 'M') toggleSlideMenu();
+  if (event.key === 'Escape') document.getElementById('slideMenu').classList.remove('active');
+});
+
+let touchStartX = 0;
+document.addEventListener('touchstart', event => {
+  touchStartX = event.touches[0].clientX;
+}, { passive: true });
+
+document.addEventListener('touchend', event => {
+  const delta = event.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(delta) > 50) {
+    changeSlide(delta < 0 ? 1 : -1);
+  }
+}, { passive: true });
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildPresentation();
+  buildDotBar();
+  showSlide(0);
+});
 </script>
 </body>
 </html>

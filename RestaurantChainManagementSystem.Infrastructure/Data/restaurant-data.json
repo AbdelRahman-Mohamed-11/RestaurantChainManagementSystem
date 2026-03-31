@@ -1,0 +1,305 @@
+{
+  "Branches": [
+    {
+      "Id": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "Name": "Flavor House - Nasr City",
+      "Address": "15 Abbas El Akkad St, Cairo",
+      "ContactNumber": "0223456789",
+      "OpeningHours": "10:00 AM - 11:00 PM",
+      "ManagerEmployeeId": "68311d38-909f-44b8-90e9-a0a7b3208393",
+      "MenuItems": [
+        {
+          "ItemId": "fa53ef0c-3e65-4d2a-b125-57e4acc32e88",
+          "OverridePrice": null,
+          "IsAvailable": true
+        },
+        {
+          "ItemId": "4502dc8a-1a36-45d0-8aa2-85268652e917",
+          "OverridePrice": 145,
+          "IsAvailable": true
+        },
+        {
+          "ItemId": "15bc8b83-4cb1-4213-8eae-2c63b6fe0403",
+          "OverridePrice": null,
+          "IsAvailable": true
+        }
+      ],
+      "InventoryItems": [
+        {
+          "IngredientId": "91d9fc34-299d-4200-9549-5fdb99cdf012",
+          "IngredientName": "Chicken Breast",
+          "Unit": 1,
+          "CurrentQuantity": 20,
+          "LowStockThreshold": 3
+        },
+        {
+          "IngredientId": "e148b5fb-4b1e-4d8b-89ec-2b39ef826d86",
+          "IngredientName": "Rice",
+          "Unit": 1,
+          "CurrentQuantity": 15,
+          "LowStockThreshold": 2
+        },
+        {
+          "IngredientId": "3cb9d329-0941-4293-b325-ed522faf2c26",
+          "IngredientName": "Cheese",
+          "Unit": 1,
+          "CurrentQuantity": 8,
+          "LowStockThreshold": 1
+        },
+        {
+          "IngredientId": "c58d6bf8-a7d2-430f-9d26-df77cafb023b",
+          "IngredientName": "Bread Bun",
+          "Unit": 3,
+          "CurrentQuantity": 50,
+          "LowStockThreshold": 10
+        },
+        {
+          "IngredientId": "338a2ce0-dad3-4ba8-a5c5-b20d8513a68a",
+          "IngredientName": "Potato",
+          "Unit": 1,
+          "CurrentQuantity": 12,
+          "LowStockThreshold": 2
+        },
+        {
+          "IngredientId": "79a49bf2-d66d-4a56-a2a4-35dc082c27b2",
+          "IngredientName": "Soft Drink Syrup",
+          "Unit": 2,
+          "CurrentQuantity": 10,
+          "LowStockThreshold": 2
+        }
+      ]
+    }
+  ],
+  "Employees": [
+    {
+      "Id": "68311d38-909f-44b8-90e9-a0a7b3208393",
+      "FullName": "Sara Hassan",
+      "Position": 4,
+      "Salary": 18000,
+      "HireDate": "2021-02-10",
+      "PhoneNumber": "01010001000",
+      "Email": "sara.manager@restaurant.local",
+      "PrimaryBranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "DeliveryProfile": null
+    },
+    {
+      "Id": "1d373781-ea63-4b35-b66b-0a30b3575dd7",
+      "FullName": "Omar Ali",
+      "Position": 2,
+      "Salary": 8200,
+      "HireDate": "2022-05-01",
+      "PhoneNumber": "01010001001",
+      "Email": "omar.waiter@restaurant.local",
+      "PrimaryBranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "DeliveryProfile": null
+    },
+    {
+      "Id": "2d1ecfe2-70a3-44b8-a621-fd39c1d5fff6",
+      "FullName": "Mona Adel",
+      "Position": 3,
+      "Salary": 9000,
+      "HireDate": "2022-08-08",
+      "PhoneNumber": "01010001002",
+      "Email": "mona.cashier@restaurant.local",
+      "PrimaryBranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "DeliveryProfile": null
+    },
+    {
+      "Id": "84e47464-7e37-4e71-9fc4-2bfe6d9bd7c5",
+      "FullName": "Youssef Nabil",
+      "Position": 1,
+      "Salary": 12500,
+      "HireDate": "2020-11-12",
+      "PhoneNumber": "01010001003",
+      "Email": "youssef.chef@restaurant.local",
+      "PrimaryBranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "DeliveryProfile": null
+    },
+    {
+      "Id": "19bae058-b0bc-48e1-88a7-ec616d558a77",
+      "FullName": "Hany Mahmoud",
+      "Position": 5,
+      "Salary": 7800,
+      "HireDate": "2023-01-15",
+      "PhoneNumber": "01010001004",
+      "Email": "hany.delivery@restaurant.local",
+      "PrimaryBranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "DeliveryProfile": {
+        "VehicleType": "Motorbike",
+        "LicenseNumber": "LIC-7781",
+        "AssignedArea": "Nasr City",
+        "IsAvailable": true
+      }
+    }
+  ],
+  "Customers": [
+    {
+      "Id": "d78350c3-07d5-420a-b112-0f2a7f99b69f",
+      "FullName": "Ahmed Samir",
+      "PhoneNumber": "01099990001",
+      "Email": "ahmed.customer@restaurant.local",
+      "LoyaltyPoints": 0
+    },
+    {
+      "Id": "ad41e71f-0511-4b30-abea-b91e7ed34ee3",
+      "FullName": "Nour Tarek",
+      "PhoneNumber": "01099990002",
+      "Email": "nour.customer@restaurant.local",
+      "LoyaltyPoints": 0
+    }
+  ],
+  "MenuItems": [
+    {
+      "Id": "fa53ef0c-3e65-4d2a-b125-57e4acc32e88",
+      "Name": "Grilled Chicken Plate",
+      "Description": "Charcoal grilled chicken served with seasoned rice.",
+      "BasePrice": 165,
+      "Category": 2,
+      "AddOns": [
+        {
+          "Id": "2197349a-774e-4b82-bfd4-db8feafdefd7",
+          "Name": "Extra Cheese",
+          "ExtraPrice": 20
+        }
+      ],
+      "Recipe": [
+        {
+          "IngredientId": "91d9fc34-299d-4200-9549-5fdb99cdf012",
+          "IngredientName": "Chicken Breast",
+          "Unit": 1,
+          "QuantityPerServing": 0.35
+        },
+        {
+          "IngredientId": "e148b5fb-4b1e-4d8b-89ec-2b39ef826d86",
+          "IngredientName": "Rice",
+          "Unit": 1,
+          "QuantityPerServing": 0.20
+        }
+      ]
+    },
+    {
+      "Id": "4502dc8a-1a36-45d0-8aa2-85268652e917",
+      "Name": "Crispy Burger",
+      "Description": "Crispy chicken burger with sauce and fries.",
+      "BasePrice": 140,
+      "Category": 2,
+      "AddOns": [
+        {
+          "Id": "4b1a3e9a-910a-4432-99b6-7b1dec48cba4",
+          "Name": "Large Size",
+          "ExtraPrice": 25
+        }
+      ],
+      "Recipe": [
+        {
+          "IngredientId": "91d9fc34-299d-4200-9549-5fdb99cdf012",
+          "IngredientName": "Chicken Breast",
+          "Unit": 1,
+          "QuantityPerServing": 0.20
+        },
+        {
+          "IngredientId": "3cb9d329-0941-4293-b325-ed522faf2c26",
+          "IngredientName": "Cheese",
+          "Unit": 1,
+          "QuantityPerServing": 0.05
+        },
+        {
+          "IngredientId": "c58d6bf8-a7d2-430f-9d26-df77cafb023b",
+          "IngredientName": "Bread Bun",
+          "Unit": 3,
+          "QuantityPerServing": 1
+        },
+        {
+          "IngredientId": "338a2ce0-dad3-4ba8-a5c5-b20d8513a68a",
+          "IngredientName": "Potato",
+          "Unit": 1,
+          "QuantityPerServing": 0.18
+        }
+      ]
+    },
+    {
+      "Id": "15bc8b83-4cb1-4213-8eae-2c63b6fe0403",
+      "Name": "Cola",
+      "Description": "Cold fountain cola.",
+      "BasePrice": 35,
+      "Category": 4,
+      "AddOns": [],
+      "Recipe": [
+        {
+          "IngredientId": "79a49bf2-d66d-4a56-a2a4-35dc082c27b2",
+          "IngredientName": "Soft Drink Syrup",
+          "Unit": 2,
+          "QuantityPerServing": 0.10
+        }
+      ]
+    }
+  ],
+  "Ingredients": [
+    {
+      "Id": "91d9fc34-299d-4200-9549-5fdb99cdf012",
+      "Name": "Chicken Breast",
+      "Unit": 1
+    },
+    {
+      "Id": "e148b5fb-4b1e-4d8b-89ec-2b39ef826d86",
+      "Name": "Rice",
+      "Unit": 1
+    },
+    {
+      "Id": "3cb9d329-0941-4293-b325-ed522faf2c26",
+      "Name": "Cheese",
+      "Unit": 1
+    },
+    {
+      "Id": "c58d6bf8-a7d2-430f-9d26-df77cafb023b",
+      "Name": "Bread Bun",
+      "Unit": 3
+    },
+    {
+      "Id": "338a2ce0-dad3-4ba8-a5c5-b20d8513a68a",
+      "Name": "Potato",
+      "Unit": 1
+    },
+    {
+      "Id": "79a49bf2-d66d-4a56-a2a4-35dc082c27b2",
+      "Name": "Soft Drink Syrup",
+      "Unit": 2
+    }
+  ],
+  "ShiftSchedules": [
+    {
+      "Id": "4bf66624-ef08-4a74-9958-471b174590c6",
+      "EmployeeId": "1d373781-ea63-4b35-b66b-0a30b3575dd7",
+      "BranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "Date": "2026-03-31",
+      "StartTime": "10:00:00",
+      "EndTime": "18:00:00"
+    },
+    {
+      "Id": "02e9959c-b318-4f71-9fda-c21173fccd90",
+      "EmployeeId": "2d1ecfe2-70a3-44b8-a621-fd39c1d5fff6",
+      "BranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "Date": "2026-03-31",
+      "StartTime": "10:00:00",
+      "EndTime": "18:00:00"
+    },
+    {
+      "Id": "7b7206ca-23af-4448-9098-a29d23b24907",
+      "EmployeeId": "84e47464-7e37-4e71-9fc4-2bfe6d9bd7c5",
+      "BranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "Date": "2026-03-31",
+      "StartTime": "11:00:00",
+      "EndTime": "19:00:00"
+    },
+    {
+      "Id": "724a086c-0a39-46e1-b322-21847ca5a34b",
+      "EmployeeId": "19bae058-b0bc-48e1-88a7-ec616d558a77",
+      "BranchId": "24212480-2122-4ed9-bb57-a12fbb8be28c",
+      "Date": "2026-03-31",
+      "StartTime": "12:00:00",
+      "EndTime": "20:00:00"
+    }
+  ],
+  "Orders": [],
+  "Feedbacks": []
+}

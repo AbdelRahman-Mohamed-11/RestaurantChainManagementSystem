@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Restaurant Chain System — Full Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:       #1a1916;
+  --paper:     #faf8f3;
+  --paper2:    #f3f0e8;
+  --paper3:    #ece8dd;
+  --rule:      #ddd8cc;
+  --rule2:     #ccc6b8;
+  --rust:      #b85c30;
+  --rust-dim:  #7a3e20;
+  --rust-pale: #f5e8e1;
+  --teal:      #2a6b6b;
+  --teal-pale: #e4f0f0;
+  --gold:      #8a6a1a;
+  --gold-pale: #f5eed8;
+  --navy:      #1e3a5f;
+  --navy-pale: #e4ecf5;
+  --sage:      #3d6142;
+  --sage-pale: #e5ede6;
+  --text:      #2e2b24;
+  --text-mid:  #5a5448;
+  --text-dim:  #8a8070;
+  --radius:    4px;
+  --mono:      'JetBrains Mono', monospace;
+  --serif:     'Crimson Pro', Georgia, serif;
+  --sans:      'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── COVER ── */
+.cover {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 80px 60px 70px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 35%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 18px,
+    rgba(255,255,255,0.025) 18px,
+    rgba(255,255,255,0.025) 19px
+  );
+}
+.cover-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+.cover h1 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 300;
+  line-height: 1.1;
+  max-width: 700px;
+  color: #f5f0e8;
+}
+.cover h1 strong { font-weight: 700; color: #fff; display: block; }
+.cover-sub {
+  margin-top: 20px;
+  color: #9a9080;
+  font-size: 14px;
+  max-width: 560px;
+}
+.cover-tags {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 36px;
+}
+.cover-tag {
+  border: 1px solid #3a3830;
+  padding: 5px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #7a7060;
+  border-radius: 2px;
+}
+
+/* ── STICKY NAV ── */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(250,248,243,0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid var(--rule);
+  display: flex; overflow-x: auto; scrollbar-width: none;
+}
+.sticky-nav::-webkit-scrollbar { display: none; }
+.nav-a {
+  padding: 13px 18px;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 1px;
+  color: var(--text-dim);
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color .2s, border-color .2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-a .step { color: var(--rust); font-weight: 600; }
+.nav-a:hover, .nav-a.active { color: var(--rust); border-bottom-color: var(--rust); }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 40px; }
+@media(max-width:680px){ .wrap { padding: 0 18px; } }
+
+/* ── SECTION ── */
+.sec {
+  padding: 72px 0 64px;
+  border-bottom: 1px solid var(--rule);
+}
+.sec:last-child { border-bottom: none; }
+
+.sec-header { margin-bottom: 44px; }
+.sec-step {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 10px;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.5vw, 44px);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.sec-sub {
+  margin-top: 8px;
+  color: var(--text-mid);
+  font-size: 14px;
+  font-style: italic;
+  font-family: var(--serif);
+}
+
+/* ── CALLOUT BOXES ── */
+.box {
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-size: 14px;
+}
+.box-label {
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.box p { margin-bottom: 8px; }
+.box p:last-child { margin-bottom: 0; }
+
+.box-what  { background: var(--navy-pale);  border-left: 3px solid var(--navy);  }
+.box-what .box-label { color: var(--navy); }
+.box-what  { color: var(--navy); }
+
+.box-tip   { background: var(--gold-pale);  border-left: 3px solid var(--gold);  }
+.box-tip   .box-label { color: var(--gold); }
+.box-tip   { color: #5a4a10; }
+
+.box-warn  { background: var(--rust-pale);  border-left: 3px solid var(--rust);  }
+.box-warn  .box-label { color: var(--rust); }
+.box-warn  { color: var(--rust-dim); }
+
+.box-green { background: var(--sage-pale);  border-left: 3px solid var(--sage);  }
+.box-green .box-label { color: var(--sage); }
+.box-green { color: #2a4a2e; }
+
+.box-teal  { background: var(--teal-pale);  border-left: 3px solid var(--teal);  }
+.box-teal  .box-label { color: var(--teal); }
+.box-teal  { color: #1a4040; }
+
+/* ── PROSE ── */
+.prose { max-width: 800px; }
+.prose p { margin-bottom: 14px; color: var(--text); }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { color: var(--ink); font-weight: 600; }
+.prose em { font-family: var(--serif); font-style: italic; }
+
+/* ── DIVIDER ── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 36px 0;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--rule);
+}
+.divider-label {
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--text-dim); text-transform: uppercase; white-space: nowrap;
+}
+
+/* ── SRS ── */
+.srs-doc {
+  background: #fff;
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.srs-doc-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 20px 28px;
+}
+.srs-doc-header .doc-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+}
+.srs-doc-header .doc-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #7a7060;
+  margin-top: 6px;
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.srs-body { padding: 0; }
+.srs-chapter {
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 28px;
+}
+.srs-chapter:last-child { border-bottom: none; }
+.srs-chapter-num {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--rust);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.srs-chapter-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.srs-req {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+}
+.srs-req:last-child { margin-bottom: 0; }
+.srs-req-id {
+  padding: 12px 10px;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 1px;
+  color: var(--rust);
+  border-right: 1px solid var(--rule);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 14px;
+  font-weight: 600;
+}
+.srs-req-text {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.65;
+}
+.srs-req-text strong { color: var(--ink); }
+
+/* ── EXTRACTION FLOW ── */
+.extract-flow {
+  background: var(--paper2);
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 24px 0;
+}
+.extract-title {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--rust);
+  margin-bottom: 16px;
+}
+.extract-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: start;
+}
+@media(max-width:600px){.extract-grid{grid-template-columns:1fr;}}
+.extract-source {
+  background: #fff;
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.extract-source .src-label {
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px; font-weight: 600;
+}
+.extract-source mark {
+  background: #fff3c4;
+  color: var(--ink);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+.extract-arrow {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 16px;
+  font-size: 20px;
+  color: var(--rust);
+  padding-top: 28px;
+}
+.extract-result {
+  background: #fff;
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.extract-result .res-label {
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 8px; font-weight: 600;
+}
+.extracted-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 4px 0; font-size: 13px; color: var(--text);
+  border-bottom: 1px dashed var(--rule);
+}
+.extracted-item:last-child { border-bottom: none; }
+.extracted-item::before { content: '→'; color: var(--teal); font-size: 12px; padding-top: 1px; }
+
+/* ── SCOPE TABLE ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+@media(max-width:640px){ .two-col { grid-template-columns: 1fr; } }
+.scope-block {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--rule2);
+}
+.scope-block-head {
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 600;
+}
+.scope-block.in .scope-block-head { background: var(--sage-pale); color: var(--sage); border-bottom: 1px solid #c8d9ca; }
+.scope-block.out .scope-block-head { background: var(--rust-pale); color: var(--rust); border-bottom: 1px solid #e5c4b8; }
+.scope-block-item {
+  padding: 9px 16px;
+  font-size: 13px; color: var(--text);
+  border-bottom: 1px solid var(--rule);
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.scope-block-item:last-child { border-bottom: none; }
+.scope-block-item .si { font-size: 14px; }
+
+/* ── ACTOR TABLE ── */
+.actor-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.actor-table thead tr { border-bottom: 2px solid var(--rule2); }
+.actor-table th {
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left; font-weight: 600;
+  background: var(--paper2);
+}
+.actor-table tbody tr { border-bottom: 1px solid var(--rule); }
+.actor-table tbody tr:last-child { border-bottom: none; }
+.actor-table td { padding: 12px 14px; vertical-align: top; }
+.actor-table td:first-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.actor-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 2px;
+  text-transform: uppercase; font-weight: 600;
+}
+.badge-p { background: var(--rust-pale); color: var(--rust); }
+.badge-s { background: var(--navy-pale); color: var(--navy); }
+.badge-sys { background: var(--paper3); color: var(--text-dim); border: 1px solid var(--rule2); }
+
+/* ── ASSUMPTION LIST ── */
+.assumption-row {
+  display: grid; grid-template-columns: 48px 1fr;
+  gap: 0; border-bottom: 1px solid var(--rule);
+  background: #fff; border: 1px solid var(--rule2);
+  border-radius: var(--radius); margin-bottom: 8px;
+  overflow: hidden;
+}
+.assumption-row:last-child { margin-bottom: 0; }
+.assumption-num {
+  background: var(--paper2);
+  border-right: 1px solid var(--rule2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--rust); font-weight: 600;
+  padding: 14px 8px;
+}
+.assumption-text { padding: 12px 16px; font-size: 14px; color: var(--text); }
+.assumption-text strong { color: var(--ink); }
+
+/* ── USER STORY DERIVATION ── */
+.derivation-steps {
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--rule2); border-radius: var(--radius);
+  overflow: hidden; margin: 20px 0;
+}
+.deriv-step {
+  display: grid; grid-template-columns: 200px 1fr;
+  border-bottom: 1px solid var(--rule);
+}
+.deriv-step:last-child { border-bottom: none; }
+.deriv-step-label {
+  padding: 14px 16px;
+  background: var(--paper2);
+  border-right: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 1px;
+  color: var(--rust); font-weight: 600;
+  display: flex; align-items: flex-start;
+}
+.deriv-step-content {
+  padding: 14px 18px;
+  font-size: 13.5px; color: var(--text);
+  line-height: 1.65;
+}
+.deriv-step-content .srs-ref {
+  font-family: var(--mono);
+  font-size: 10px; color: var(--gold);
+  background: var(--gold-pale);
+  padding: 1px 6px; border-radius: 2px; margin-left: 4px;
+}
+@media(max-width:620px){
+  .deriv-step { grid-template-columns: 1fr; }
+  .deriv-step-label { border-right: none; border-bottom: 1px solid var(--rule); }
+}
+
+/* ── FILTER BUTTONS ── */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.filter-btn {
+  padding: 6px 14px; border-radius: 2px;
+  border: 1px solid var(--rule2);
+  background: #fff; color: var(--text-mid);
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1px; cursor: pointer;
+  transition: all .15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--rust); color: #fff;
+  border-color: var(--rust);
+}
+
+/* ── USER STORY CARD ── */
+.us-list { display: flex; flex-direction: column; gap: 10px; }
+.us-card {
+  background: #fff;
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.us-card:hover { border-color: var(--rust); }
+.us-card-top {
+  display: grid; grid-template-columns: 56px 1fr;
+  border-bottom: 1px solid var(--rule);
+}
+.us-card-id {
+  background: var(--paper2);
+  border-right: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--rust); font-weight: 600;
+  padding: 10px 6px; text-align: center;
+}
+.us-card-statement {
+  padding: 12px 16px;
+  font-size: 14px; line-height: 1.6;
+}
+.us-as   { color: var(--rust); font-weight: 600; }
+.us-want { color: var(--ink); }
+.us-so   { color: var(--text-mid); font-style: italic; font-family: var(--serif); }
+.us-card-bottom {
+  display: grid; grid-template-columns: 1fr 1fr;
+  font-size: 12.5px;
+}
+@media(max-width:560px){ .us-card-bottom { grid-template-columns: 1fr; } }
+.us-source, .us-validation {
+  padding: 10px 16px;
+}
+.us-source { border-right: 1px solid var(--rule); }
+.us-section-label {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 6px; font-weight: 600;
+}
+.us-source .us-section-label { color: var(--gold); }
+.us-validation .us-section-label { color: var(--rust); }
+.us-source-text { color: var(--text-mid); font-style: italic; font-family: var(--serif); font-size: 13px; }
+.us-val-list { list-style: none; }
+.us-val-list li {
+  padding: 2px 0; color: var(--text-mid);
+  display: flex; gap: 6px; align-items: flex-start;
+}
+.us-val-list li::before { content: '✗'; color: #c0392b; font-size: 11px; padding-top: 2px; flex-shrink: 0; }
+.us-meta-bar {
+  padding: 8px 16px;
+  background: var(--paper2);
+  border-top: 1px solid var(--rule);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.us-tag {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 2px; font-weight: 600;
+}
+.prio-h { background: #fde8e4; color: #c0392b; }
+.prio-m { background: #fdf2e4; color: #b05a10; }
+.prio-l { background: var(--sage-pale); color: var(--sage); }
+.tag-cat { background: var(--paper3); color: var(--text-dim); border: 1px solid var(--rule2); }
+
+/* ── BUSINESS RULES ── */
+.br-group { margin-bottom: 36px; }
+.br-group-heading {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim); padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule2); margin-bottom: 12px;
+}
+.br-row {
+  display: grid; grid-template-columns: 56px 1fr auto;
+  gap: 0; background: #fff;
+  border: 1px solid var(--rule2); border-radius: var(--radius);
+  overflow: hidden; margin-bottom: 6px; align-items: stretch;
+}
+.br-row:last-child { margin-bottom: 0; }
+.br-id {
+  background: var(--paper2); border-right: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--rust); font-weight: 600; padding: 14px 6px;
+  text-align: center;
+}
+.br-body { padding: 12px 16px; font-size: 14px; color: var(--text); line-height: 1.6; }
+.br-body strong { color: var(--ink); }
+.br-type {
+  padding: 12px 14px;
+  border-left: 1px solid var(--rule);
+  display: flex; align-items: flex-start; padding-top: 14px;
+}
+.br-badge {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; padding: 2px 7px; border-radius: 2px;
+  text-transform: uppercase; white-space: nowrap; font-weight: 600;
+}
+.br-required { background: #fde8e4; color: #c0392b; }
+.br-business { background: var(--gold-pale); color: var(--gold); }
+.br-system   { background: var(--teal-pale); color: var(--teal); }
+.br-data     { background: var(--navy-pale); color: var(--navy); }
+@media(max-width:560px){
+  .br-row { grid-template-columns: 48px 1fr; }
+  .br-type { display: none; }
+}
+
+/* ── ERD INTRO ── */
+.erd-why {
+  background: var(--paper2);
+  border: 1px solid var(--rule2);
+  border-radius: var(--radius);
+  padding: 24px 28px; margin: 24px 0;
+}
+.erd-why-title {
+  font-family: var(--serif); font-size: 20px;
+  font-weight: 600; color: var(--ink); margin-bottom: 10px;
+}
+.erd-entity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px; margin-top: 12px;
+}
+.erd-entity {
+  background: #fff; border: 1px solid var(--rule2);
+  border-radius: var(--radius); overflow: hidden;
+}
+.erd-entity-head {
+  padding: 10px 14px;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 1px; font-weight: 600;
+}
+.erd-attr {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12.5px; color: var(--text);
+}
+.erd-attr:last-child { border-bottom: none; }
+.erd-attr-name { font-family: var(--mono); font-size: 11px; }
+.erd-badge {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 1px;
+  padding: 1px 6px; border-radius: 2px; font-weight: 600;
+  text-transform: uppercase;
+}
+.eb-pk  { background: #fff3c4; color: #7a5c00; }
+.eb-fk  { background: var(--navy-pale); color: var(--navy); }
+.eb-req { background: #fde8e4; color: #c0392b; }
+.eb-opt { background: var(--sage-pale); color: var(--sage); }
+.eb-val { background: var(--teal-pale); color: var(--teal); }
+.eb-en  { background: var(--paper3); color: var(--text-dim); border:1px solid var(--rule2); }
+
+.erd-rel-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+.erd-rel-table th {
+  background: var(--paper2); padding: 10px 14px;
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); text-align: left; border-bottom: 2px solid var(--rule2);
+}
+.erd-rel-table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.erd-rel-table tr:last-child td { border-bottom: none; }
+.erd-rel-table td:nth-child(2) { font-family: var(--mono); font-size: 11px; color: var(--rust); font-weight: 600; white-space: nowrap; }
+.erd-rel-table td:nth-child(3) { font-family: var(--mono); font-size: 11px; color: var(--teal); }
+code { font-family: var(--mono); font-size: 12px; background: var(--paper3); padding: 1px 5px; border-radius: 2px; }
+
+/* ── USE CASE ── */
+.uc-list { display: flex; flex-direction: column; gap: 14px; }
+.uc-card { background: #fff; border: 1px solid var(--rule2); border-radius: var(--radius); overflow: hidden; }
+.uc-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  cursor: pointer; user-select: none;
+  transition: background .15s;
+  border-bottom: 1px solid transparent;
+}
+.uc-header:hover { background: var(--paper2); }
+.uc-header.open { border-bottom-color: var(--rule2); }
+.uc-hid { font-family: var(--mono); font-size: 10px; color: var(--rust); font-weight: 600; min-width: 48px; }
+.uc-hname { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--ink); flex: 1; }
+.uc-hactor {
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 10px; background: var(--paper3);
+  border-radius: 2px; color: var(--text-mid);
+  white-space: nowrap;
+}
+.uc-chevron { color: var(--text-dim); font-size: 12px; transition: transform .2s; }
+.uc-chevron.open { transform: rotate(180deg); }
+.uc-body-inner { padding: 20px 24px; display: none; }
+.uc-body-inner.open { display: block; }
+.uc-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.uc-table tr { border-bottom: 1px solid var(--rule); }
+.uc-table tr:last-child { border-bottom: none; }
+.uc-table td { padding: 10px 12px; vertical-align: top; }
+.uc-table td:first-child {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--rust); width: 130px;
+  white-space: nowrap; font-weight: 600;
+  background: var(--paper2);
+  border-right: 1px solid var(--rule);
+}
+.uc-table td:last-child { color: var(--text); line-height: 1.7; }
+.uc-steps { list-style: none; counter-reset: uc; }
+.uc-steps li {
+  counter-increment: uc;
+  padding: 4px 0 4px 30px; position: relative;
+}
+.uc-steps li::before {
+  content: counter(uc);
+  position: absolute; left: 0; top: 5px;
+  width: 20px; height: 20px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 2px;
+  font-family: var(--mono); font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.uc-alt { list-style: none; }
+.uc-alt li { padding: 3px 0; color: var(--text-mid); }
+.uc-alt li::before { content: "↳ "; color: var(--rust); }
+
+/* ── PAGE FOOTER ── */
+.page-footer {
+  padding: 36px 40px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--rule);
+  background: var(--paper2);
+}
+.page-footer span { color: var(--rust); }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<div class="cover">
+  <div class="cover-eyebrow">OOP Console Application · Student Case Study Document</div>
+  <h1>Restaurant Chain<br/><strong>Management System</strong></h1>
+  <p class="cover-sub">A complete, step-by-step analysis document. Every section builds on the previous. Read it in order and nothing will be unclear.</p>
+  <div class="cover-tags">
+    <span class="cover-tag">Backend Development</span>
+    <span class="cover-tag">OOP Principles</span>
+    <span class="cover-tag">Console Application</span>
+    <span class="cover-tag">File-Based Storage</span>
+    <span class="cover-tag">Deliverables 1–12</span>
+  </div>
+</div>
+
+<!-- ══ STICKY NAV ══ -->
+<nav class="sticky-nav">
+  <a class="nav-a" href="#s1"><span class="step">01</span> Problem Statement</a>
+  <a class="nav-a" href="#s2"><span class="step">02</span> SRS</a>
+  <a class="nav-a" href="#s3"><span class="step">03</span> Scope &amp; Assumptions</a>
+  <a class="nav-a" href="#s4"><span class="step">04</span> Actors</a>
+  <a class="nav-a" href="#s5"><span class="step">05</span> User Stories</a>
+  <a class="nav-a" href="#s6"><span class="step">06</span> Business Rules</a>
+  <a class="nav-a" href="#s7"><span class="step">07</span> Use Cases</a>
+  <a class="nav-a" href="#s8"><span class="step">08</span> ERD</a>
+  <a class="nav-a" href="#s9"><span class="step">09</span> Class Diagram</a>
+  <a class="nav-a" href="#s10"><span class="step">10</span> OOP Mapping</a>
+  <a class="nav-a" href="#s11"><span class="step">11</span> Console Flow</a>
+  <a class="nav-a" href="#s12"><span class="step">12</span> Project Structure</a>
+</nav>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 01 — PROBLEM STATEMENT
+══════════════════════════════════════════ -->
+<section class="sec" id="s1">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 01 · Where Everything Begins</div>
+    <h2 class="sec-title">Problem Statement</h2>
+    <p class="sec-sub">Read this first. This is the only input. Everything else in this document is derived from it.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📌 What is a Problem Statement?</div>
+    <p>A problem statement is a <strong>plain-language description of a real-world situation</strong> that a system needs to solve. It is written by the client or business owner — not a developer. It contains no technical terms, no database concepts, no class names. It simply describes <em>what the business does and what problems it faces</em>.</p>
+    <p>Your job as a developer is to <strong>read it carefully, understand the domain, and then translate it</strong> into structured requirements (SRS), then into design artifacts (ERD, Class Diagram), and finally into code.</p>
+  </div>
+
+  <div class="divider"><div class="divider-label">The Original Problem Statement</div></div>
+
+  <div class="prose" style="background:#fff; border:1px solid var(--rule2); border-radius:var(--radius); padding:28px 32px; font-family:var(--serif); font-size:16px; line-height:1.9; color:var(--text);">
+    <p>A restaurant chain wants to develop a system to manage its operations, including branches, staff, customers, menus, and orders. The chain operates several branches, each with a unique branch ID, name, address, contact number, and opening hours. Each branch is managed by a branch manager and has several employees such as chefs, waiters, and cashiers.</p>
+
+    <p>Every employee has an employee ID, full name, position, salary, date of hire, and contact information. Employees are assigned to specific branches, and some may work shifts across multiple branches when needed. Each branch also maintains shift schedules, recording which employees worked on specific dates and time slots.</p>
+
+    <p>The restaurant offers a wide variety of menu items, each identified by a unique item ID, name, description, price, and category (e.g., appetizer, main course, dessert, beverage). Some items may have optional add-ons or variations, such as extra cheese or large size. Menu items can appear in different branches, and each branch may have its own price adjustments or availability rules based on local preferences.</p>
+
+    <p>Customers can dine in, order takeaway, or request delivery. Each customer has a customer ID, full name, phone number, email, and loyalty points balance. Customers may visit multiple branches and place several orders over time.</p>
+
+    <p>An order is identified by an order ID and includes order type (dine-in, takeaway, delivery), date and time, total amount, payment method (cash, card, wallet), and status (pending, preparing, served, completed, canceled). Orders are linked to a specific branch and handled by a responsible staff member. Each order contains one or more order items, representing the menu items purchased. For each order item, details such as quantity, unit price, special notes, and any selected add-ons should be stored.</p>
+
+    <p>The restaurant also keeps records of inventory, where each branch maintains its stock of ingredients. Each ingredient has an ingredient ID, name, unit (kg, liter, piece), and current quantity. Menu items are prepared using multiple ingredients, and each ingredient can be used in several menu items. The recipe relationship between menu items and ingredients should include the required quantity of each ingredient per serving.</p>
+
+    <p>For deliveries, the system tracks delivery staff, each having a staff ID, vehicle type, license number, and assigned area. Delivery records should include delivery ID, order ID, delivery address, delivery time, and status (on the way, delivered, failed).</p>
+
+    <p>Additionally, customers can leave feedback for orders they've completed. Each feedback record includes a feedback ID, date, rating, comments, and references the corresponding customer and order.</p>
+  </div>
+
+  <div class="box box-tip" style="margin-top:24px;">
+    <div class="box-label">💡 How to Read a Problem Statement</div>
+    <p>When reading, highlight or note: <strong>nouns</strong> (these will likely become your data entities later), <strong>verbs</strong> (these will become operations/use cases), and <strong>constraints</strong> (these will become business rules and validations). But don't jump there yet — the next step is writing the SRS first.</p>
+  </div>
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 02 — SRS
+══════════════════════════════════════════ -->
+<section class="sec" id="s2">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 02 · Before Any Design</div>
+    <h2 class="sec-title">Software Requirements Specification (SRS)</h2>
+    <p class="sec-sub">Translate the problem statement into structured, clear requirements — still no technical design.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What is an SRS?</div>
+    <p>An SRS (Software Requirements Specification) is a <strong>formal, structured document that describes what a software system must do</strong>, without specifying how it will do it. Think of it as the contract between the client (who describes the problem) and the development team (who will build the solution).</p>
+    <p>A good SRS answers: <em>What must the system do? What must the system not do? Who uses it? What are the rules?</em> It is written in <strong>clear, numbered requirements</strong> so that nothing is ambiguous or forgotten.</p>
+    <p><strong>Important:</strong> The SRS has zero technical details. No tables, no classes, no database, no code. Only <em>what</em>, never <em>how</em>.</p>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">✍️ Do Students Write This or Read It?</div>
+    <p>In a real project, you write the SRS yourself based on the client's problem statement. In an academic exercise, you are often <strong>given the problem statement</strong> and must write the SRS as your first deliverable. The SRS you see below is what you would produce after reading the problem statement above. All information used later in this document — actors, entities, stories, rules — comes <em>only</em> from this SRS, not from guessing or prior knowledge.</p>
+  </div>
+
+  <div class="divider"><div class="divider-label">The SRS Document</div></div>
+
+  <div class="srs-doc">
+    <div class="srs-doc-header">
+      <div class="doc-title">Software Requirements Specification — Restaurant Chain Management System</div>
+      <div class="doc-meta">
+        <span>Version 1.0</span>
+        <span>Type: Console-Based OOP Application</span>
+        <span>Storage: File-Based (No Database)</span>
+        <span>Audience: Backend Development Students</span>
+      </div>
+    </div>
+
+    <div class="srs-body">
+
+      <!-- Chapter 1 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 1</div>
+        <div class="srs-chapter-title">System Overview</div>
+        <div class="prose" style="font-size:14px; margin-bottom:16px;">
+          <p>The Restaurant Chain Management System is a console-based application that allows restaurant staff at one or more branches to manage daily operations. These operations include managing employees and their shifts, maintaining a menu catalogue, processing customer orders (dine-in, takeaway, delivery), tracking inventory, managing deliveries, and collecting customer feedback. The system stores all data in files. There is no graphical interface.</p>
+        </div>
+        <div class="srs-req"><div class="srs-req-id">SRS-01</div><div class="srs-req-text">The system shall support managing multiple restaurant branches simultaneously.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-02</div><div class="srs-req-text">The system shall be operated through a text-based console menu by authorized restaurant staff only.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-03</div><div class="srs-req-text">All data shall be stored in and loaded from files. No database management system shall be used.</div></div>
+      </div>
+
+      <!-- Chapter 2 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 2</div>
+        <div class="srs-chapter-title">Branch Management Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-04</div><div class="srs-req-text">The system shall allow creating, viewing, updating, and removing branch records. Each branch has a unique identifier, name, address, contact number, and opening hours.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-05</div><div class="srs-req-text">Each branch must be associated with exactly one branch manager at all times. A branch cannot exist without a manager.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-06</div><div class="srs-req-text">The system shall prevent registering two branches with the same name and address combination.</div></div>
+      </div>
+
+      <!-- Chapter 3 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 3</div>
+        <div class="srs-chapter-title">Employee Management Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-07</div><div class="srs-req-text">The system shall allow registering employees with their full name, position, salary, date of hire, and contact information. Employee positions are limited to: Chef, Waiter, Cashier, Branch Manager, Delivery Staff.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-08</div><div class="srs-req-text">Each employee must be assigned to at least one branch. An employee may work shifts at multiple branches.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-09</div><div class="srs-req-text">The system shall maintain shift schedules, recording which employee worked at which branch on a given date and time slot. An employee cannot have two overlapping shifts on the same day.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-10</div><div class="srs-req-text">Employee salary must be a positive number. Date of hire cannot be set to a future date.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-11</div><div class="srs-req-text">Employee contact information (phone and email) must be unique across all employees.</div></div>
+      </div>
+
+      <!-- Chapter 4 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 4</div>
+        <div class="srs-chapter-title">Menu Management Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-12</div><div class="srs-req-text">The system shall maintain a global catalogue of menu items. Each item has a unique identifier, name, description, base price, and category. Categories are limited to: Appetizer, Main Course, Dessert, Beverage.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-13</div><div class="srs-req-text">Menu items may have optional add-ons or variations (e.g., extra cheese, large size). Each add-on has a name and an additional price of zero or more.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-14</div><div class="srs-req-text">Each branch may override the price of any global menu item for local pricing. Each branch may also mark a menu item as unavailable at that branch.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-15</div><div class="srs-req-text">Menu item base prices must be greater than zero. Item names must be unique in the global catalogue.</div></div>
+      </div>
+
+      <!-- Chapter 5 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 5</div>
+        <div class="srs-chapter-title">Customer Management Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-16</div><div class="srs-req-text">The system shall allow registering customer profiles with a full name, phone number, email address, and a loyalty points balance starting at zero.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-17</div><div class="srs-req-text">Customer phone numbers and emails must be unique. Phone numbers must follow a valid format. Emails must contain an "@" and a domain.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-18</div><div class="srs-req-text">A customer may place orders at multiple branches over time.</div></div>
+      </div>
+
+      <!-- Chapter 6 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 6</div>
+        <div class="srs-chapter-title">Order Management Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-19</div><div class="srs-req-text">The system shall allow creating orders of three types: Dine-In, Takeaway, and Delivery. Each order is linked to a branch, a customer, and a handling staff member.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-20</div><div class="srs-req-text">An order must contain at least one item. Each order item records the menu item, quantity (minimum 1), unit price at time of order, optional special notes, and any selected add-ons.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-21</div><div class="srs-req-text">The unit price recorded on an order item must reflect the price at the time of placement, including any branch price override. It must not change if the global price is later updated.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-22</div><div class="srs-req-text">Order status follows a strict lifecycle: Pending → Preparing → Served → Completed. Cancellation is allowed from Pending status by any staff, and from Preparing status by a Branch Manager only.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-23</div><div class="srs-req-text">Payment can only be processed when an order is in Served status. Accepted payment methods are: Cash, Card, and Wallet. After payment, the order is marked Completed and cannot be changed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-24</div><div class="srs-req-text">Upon successful payment, the system shall automatically add loyalty points to the customer's account at a rate of one point per currency unit spent (rounded down).</div></div>
+      </div>
+
+      <!-- Chapter 7 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 7</div>
+        <div class="srs-chapter-title">Inventory &amp; Recipe Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-25</div><div class="srs-req-text">Each branch shall maintain its own inventory of ingredients. An ingredient record has a name, unit (kg, liter, or piece), and current quantity. Quantities must be zero or greater.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-26</div><div class="srs-req-text">Each menu item shall have a recipe that lists the ingredients required and the quantity of each ingredient needed per serving.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-27</div><div class="srs-req-text">When an order status changes from Pending to Preparing, the system shall automatically deduct the required ingredient quantities from the branch inventory based on the recipe and the quantity of each item ordered.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-28</div><div class="srs-req-text">If a deduction would cause any ingredient to fall below a defined low-stock threshold, the system shall display a warning alert before confirming the status change.</div></div>
+      </div>
+
+      <!-- Chapter 8 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 8</div>
+        <div class="srs-chapter-title">Delivery Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-29</div><div class="srs-req-text">Delivery staff profiles shall include a staff ID, vehicle type, license number, and assigned delivery area.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-30</div><div class="srs-req-text">A delivery order must have a non-empty delivery address. The system shall create a delivery record automatically when a delivery-type order is confirmed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-31</div><div class="srs-req-text">A delivery record tracks: delivery ID, linked order, delivery address, assigned delivery staff, delivery timestamp, and status (On the Way, Delivered, Failed).</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-32</div><div class="srs-req-text">A delivery staff member may only be assigned to one active delivery at a time. They become available again when their delivery is marked Delivered or Failed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-33</div><div class="srs-req-text">If a delivery fails, a reason must be recorded. The linked order shall be flagged for manager review.</div></div>
+      </div>
+
+      <!-- Chapter 9 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 9</div>
+        <div class="srs-chapter-title">Feedback Requirements</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-34</div><div class="srs-req-text">A customer may submit feedback for a completed order. Feedback includes a numeric rating from 1 to 5 and an optional text comment.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-35</div><div class="srs-req-text">Feedback can only be submitted for orders with status Completed. Only one feedback record is allowed per order per customer.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-36</div><div class="srs-req-text">Each feedback record stores: a unique feedback ID, the date submitted, the rating, the comment, and references to the customer and order.</div></div>
+      </div>
+
+      <!-- Chapter 10 -->
+      <div class="srs-chapter">
+        <div class="srs-chapter-num">Chapter 10</div>
+        <div class="srs-chapter-title">Architecture &amp; Implementation Constraints</div>
+        <div class="srs-req"><div class="srs-req-id">SRS-37</div><div class="srs-req-text">The solution shall be organized into three simple projects: <strong>Core</strong> for business entities and contracts, <strong>Infrastructure</strong> for file-based persistence and seed data, and <strong>UI</strong> for console menus, display formatting, and user interaction.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-38</div><div class="srs-req-text">The design shall prefer <strong>interfaces and composition</strong> for behavior sharing. Inheritance may be used only when it adds clear value and keeps the model simpler.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-39</div><div class="srs-req-text">Entity creation shall use <strong>simple factory methods</strong> where they improve readability, validation, and consistency of object creation. Factories must remain lightweight and must not hide important business rules.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-40</div><div class="srs-req-text">The implementation shall follow <strong>KISS</strong> and the <strong>SOLID principles</strong>, with clean naming, small focused methods, and explicit validation. Over-engineering and unnecessary patterns are not allowed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-41</div><div class="srs-req-text">The codebase shall use <strong>extension methods</strong> and, where appropriate in .NET 10, <strong>extension properties</strong> only for small reusable helpers that improve readability without hiding business logic.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-42</div><div class="srs-req-text">The implementation shall favor <strong>clean, professional, production-style code</strong> with clear separation of concerns, predictable control flow, and simple testable components. No code generation or framework-heavy patterns are required.</div></div>
+      </div>
+
+    </div><!-- srs-body -->
+  </div><!-- srs-doc -->
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 03 — SCOPE & ASSUMPTIONS
+══════════════════════════════════════════ -->
+<section class="sec" id="s3">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 03 · Extracted from SRS</div>
+    <h2 class="sec-title">Scope &amp; Assumptions</h2>
+    <p class="sec-sub">What this system will and will not do — and the decisions we made to fill in gaps the SRS left open.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What are Scope and Assumptions?</div>
+    <p><strong>Scope</strong> defines the clear boundary of the system. It answers: <em>what is inside our responsibility and what is not?</em> Every item in the scope should trace back to at least one SRS requirement. Items out of scope exist to prevent "scope creep" — building features no one asked for.</p>
+    <p><strong>Assumptions</strong> fill the gaps. No SRS is perfectly complete. When the SRS leaves something unclear or unspecified, the developer must make a clear, written assumption so that everyone agrees on the behavior. Assumptions are not guesses — they are <em>documented decisions</em>.</p>
+  </div>
+
+  <div class="divider"><div class="divider-label">Scope</div></div>
+
+  <div class="two-col">
+    <div class="scope-block in">
+      <div class="scope-block-head">✅ In Scope</div>
+      <div class="scope-block-item"><span class="si">→</span><span>Manage multiple branches (SRS-01, SRS-04)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Employee registration, assignment, and shift scheduling (SRS-07–SRS-11)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Global menu catalogue with per-branch pricing &amp; availability (SRS-12–SRS-15)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Customer registration with loyalty points (SRS-16–SRS-18)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Orders: dine-in, takeaway, delivery — full lifecycle (SRS-19–SRS-24)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Branch inventory with auto-deduction on order preparation (SRS-25–SRS-28)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Delivery staff tracking and delivery record management (SRS-29–SRS-33)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Customer feedback for completed orders (SRS-34–SRS-36)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>File-based data storage and loading (SRS-03)</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Console menu interface for all operations (SRS-02)</span></div>
+    </div>
+    <div class="scope-block out">
+      <div class="scope-block-head">🚫 Out of Scope</div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Any graphical user interface (GUI)</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Real-time online or mobile ordering</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Live payment gateway (payment is simulated)</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>GPS-based delivery tracking</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Automated supplier reordering</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Payroll calculation or HR management</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Loyalty point redemption at checkout</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Multi-language or currency support</span></div>
+      <div class="scope-block-item"><span class="si">✗</span><span>Network/cloud database</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-label">Assumptions — Filling SRS Gaps</div></div>
+
+  <div class="assumption-row"><div class="assumption-num">A-01</div><div class="assumption-text">The SRS says employees can work at multiple branches but doesn't define a "primary branch." We assume each employee has <strong>one primary branch</strong> stored on their profile, and all other branches are accessed through shift records only.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-02</div><div class="assumption-text">SRS-27 says inventory is deducted when an order moves to Preparing, but doesn't say what happens if inventory is insufficient. We assume the system <strong>shows a warning but allows the manager to override and proceed</strong>. The operation is not automatically blocked.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-03</div><div class="assumption-text">SRS-28 says "low-stock threshold" but doesn't define it. We assume a <strong>default threshold of 5 units</strong> per ingredient. Branch managers can update this value per ingredient.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-04</div><div class="assumption-text">SRS-24 says loyalty points are awarded at payment, but doesn't say when delivery orders are paid. We assume delivery orders are also paid through the cashier console, after the delivery is confirmed as Delivered.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-05</div><div class="assumption-text">The SRS does not specify who manages customers. We assume <strong>any branch staff (Waiter, Cashier)</strong> can register or look up customer profiles.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-06</div><div class="assumption-text">The SRS doesn't mention user login. We assume there is a <strong>simple role-based menu system</strong>: the user selects their role (Admin, Manager, Waiter, etc.) when starting a session. No real authentication is required for this version.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-07</div><div class="assumption-text">The SRS mentions "Delivery Staff" separately from other employees. We assume <strong>Delivery Staff is a type of employee</strong> with additional delivery-specific attributes (vehicle, license, area) stored separately.</div></div>
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 04 — ACTORS
+══════════════════════════════════════════ -->
+<section class="sec" id="s4">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 04 · Extracted from SRS</div>
+    <h2 class="sec-title">Actors</h2>
+    <p class="sec-sub">Who interacts with the system? Every actor traces back to the SRS.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What is an Actor?</div>
+    <p>An actor is any <strong>person or role</strong> that interacts with the system from outside. We find actors by asking: <em>"Who is mentioned in the SRS as someone who does something?"</em> Actors are not implemented as code — they represent the humans who will use the system. We identify them before writing user stories because every user story must have an actor.</p>
+  </div>
+
+  <div class="extract-flow">
+    <div class="extract-title">🔎 How Actors Are Extracted from the SRS</div>
+    <div class="extract-grid">
+      <div class="extract-source">
+        <div class="src-label">From SRS</div>
+        SRS-07: positions limited to <mark>Chef, Waiter, Cashier, Branch Manager, Delivery Staff</mark><br/><br/>
+        SRS-02: operated by <mark>authorized restaurant staff</mark><br/><br/>
+        SRS-16: <mark>customer</mark> profiles are registered<br/><br/>
+        SRS-27: system performs <mark>automatic</mark> inventory deduction
+      </div>
+      <div class="extract-arrow">→</div>
+      <div class="extract-result">
+        <div class="res-label">Extracted Actors</div>
+        <div class="extracted-item">System Admin (manages branches, menus, employees globally)</div>
+        <div class="extracted-item">Branch Manager (manages own branch)</div>
+        <div class="extracted-item">Chef (kitchen queue, status updates)</div>
+        <div class="extracted-item">Waiter (orders, customer registration)</div>
+        <div class="extracted-item">Cashier (payment processing)</div>
+        <div class="extracted-item">Delivery Staff (updates delivery status)</div>
+        <div class="extracted-item">Customer (secondary — staff acts on their behalf)</div>
+        <div class="extracted-item">System (auto — performs automatic operations)</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto; margin-top:20px;">
+  <table class="actor-table">
+    <thead>
+      <tr>
+        <th>Actor</th>
+        <th>Type</th>
+        <th>SRS Source</th>
+        <th>Responsibilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🔧 System Admin</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-01 to SRS-15</td>
+        <td>Full system access. Creates branches, employees, global menu items, ingredients, recipes. Views all reports.</td>
+      </tr>
+      <tr>
+        <td>🏢 Branch Manager</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-05, SRS-09, SRS-14, SRS-28</td>
+        <td>Manages their branch. Schedules shifts, sets branch menu pricing, manages inventory, generates reports, overrides warnings.</td>
+      </tr>
+      <tr>
+        <td>🍳 Chef</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-22, SRS-27</td>
+        <td>Views kitchen queue. Updates order status (Pending → Preparing → Served). Triggers inventory deduction.</td>
+      </tr>
+      <tr>
+        <td>🤵 Waiter</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-16, SRS-19, SRS-20, SRS-22</td>
+        <td>Registers customers. Places all order types. Adds items/notes. Cancels pending orders. Submits feedback on behalf of customers.</td>
+      </tr>
+      <tr>
+        <td>💰 Cashier</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-23, SRS-24</td>
+        <td>Processes payments for served orders. Selects payment method. Triggers loyalty point award.</td>
+      </tr>
+      <tr>
+        <td>🚴 Delivery Staff</td>
+        <td><span class="actor-badge badge-p">Primary</span></td>
+        <td>SRS-29–SRS-33</td>
+        <td>Views assigned delivery. Updates delivery status (On the Way → Delivered / Failed). Records failure reasons.</td>
+      </tr>
+      <tr>
+        <td>👤 Customer</td>
+        <td><span class="actor-badge badge-s">Secondary</span></td>
+        <td>SRS-16–SRS-18, SRS-34</td>
+        <td>Does not interact with the console directly. Their profile and orders are managed by Waiters and Cashiers on their behalf.</td>
+      </tr>
+      <tr>
+        <td>⚙️ System (Auto)</td>
+        <td><span class="actor-badge badge-sys">System</span></td>
+        <td>SRS-24, SRS-27, SRS-28, SRS-30</td>
+        <td>Awards loyalty points after payment. Deducts inventory on Preparing. Creates delivery records on delivery orders. Triggers low-stock alerts.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 05 — USER STORIES
+══════════════════════════════════════════ -->
+<section class="sec" id="s5">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 05 · Derived from SRS + Actors</div>
+    <h2 class="sec-title">User Stories</h2>
+    <p class="sec-sub">Each story is mapped to its source SRS requirement. Every validation is also traceable.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What is a User Story?</div>
+    <p>A user story is a <strong>short, goal-focused description of something an actor needs the system to do</strong>, written from the actor's perspective. The standard format is:<br/>
+    <em>"As a [actor], I want to [action], so that [business value]."</em></p>
+    <p>User stories are not technical. They don't mention classes, files, or methods. They capture intent and business value only.</p>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">✍️ How Are User Stories Derived from the SRS?</div>
+    <p><strong>Step 1 — Read each SRS requirement.</strong> Ask: does this require an actor to actively do something? If yes → it is a candidate user story.</p>
+    <p><strong>Step 2 — Assign the correct actor</strong> from the Actors table you already built.</p>
+    <p><strong>Step 3 — Write the story</strong> using the template. The "so that" part comes from the business purpose in the SRS chapter title or the surrounding context.</p>
+    <p><strong>Step 4 — Add validations.</strong> These come from the SRS requirement itself (e.g., SRS-10: "salary must be positive") and from your Assumptions table (e.g., A-03: low-stock threshold = 5).</p>
+  </div>
+
+  <div class="derivation-steps">
+    <div class="deriv-step">
+      <div class="deriv-step-label">SRS Requirement</div>
+      <div class="deriv-step-content">SRS-07: "The system shall allow registering employees with their full name, position, salary, date of hire…"</div>
+    </div>
+    <div class="deriv-step">
+      <div class="deriv-step-label">Identify Actor</div>
+      <div class="deriv-step-content">Who does this? → System Admin (from Actors table)</div>
+    </div>
+    <div class="deriv-step">
+      <div class="deriv-step-label">Write the Story</div>
+      <div class="deriv-step-content"><em>"As a System Admin, I want to register a new employee with their details, so that the employee can be assigned to branches and manage operations."</em></div>
+    </div>
+    <div class="deriv-step">
+      <div class="deriv-step-label">Add Validations</div>
+      <div class="deriv-step-content">From SRS-10: salary > 0, hire date ≤ today. From SRS-11: phone and email must be unique. From SRS-07: position must be from the enum list.</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterUS('all',this)">All</button>
+    <button class="filter-btn" onclick="filterUS('System Admin',this)">System Admin</button>
+    <button class="filter-btn" onclick="filterUS('Branch Manager',this)">Branch Manager</button>
+    <button class="filter-btn" onclick="filterUS('Waiter',this)">Waiter</button>
+    <button class="filter-btn" onclick="filterUS('Cashier',this)">Cashier</button>
+    <button class="filter-btn" onclick="filterUS('Chef',this)">Chef</button>
+    <button class="filter-btn" onclick="filterUS('Delivery Staff',this)">Delivery Staff</button>
+  </div>
+
+  <div class="us-list" id="usList">
+
+    <!-- US-01 -->
+    <div class="us-card" data-actor="System Admin">
+      <div class="us-card-top">
+        <div class="us-card-id">US-01</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a System Admin,</span>
+          <span class="us-want"> I want to register a new branch with all its details,</span>
+          <span class="us-so"> so that the restaurant can track and manage operations at a new location.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-04: "Each branch has a unique identifier, name, address, contact number, and opening hours." · SRS-05: must have a manager · SRS-06: no duplicate name+address</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Branch name must be unique</li><li>Contact number must match phone format</li><li>Opening time must be before closing time</li><li>Manager must already exist in the system</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Branch</span></div>
+    </div>
+
+    <!-- US-02 -->
+    <div class="us-card" data-actor="System Admin">
+      <div class="us-card-top">
+        <div class="us-card-id">US-02</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a System Admin,</span>
+          <span class="us-want"> I want to register a new employee and assign them to a branch,</span>
+          <span class="us-so"> so that the branch is properly staffed and the employee can perform their role.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-07: employee details and position enum · SRS-08: must be assigned to at least one branch · SRS-10: salary > 0, hire date ≤ today · SRS-11: phone and email unique</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Position must be from: Chef, Waiter, Cashier, Branch Manager, Delivery Staff</li><li>Salary must be a positive number</li><li>Hire date cannot be in the future</li><li>Phone and email must be unique</li><li>Assigned branch must exist</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Employee</span></div>
+    </div>
+
+    <!-- US-03 -->
+    <div class="us-card" data-actor="Branch Manager">
+      <div class="us-card-top">
+        <div class="us-card-id">US-03</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Branch Manager,</span>
+          <span class="us-want"> I want to schedule employee shifts at my branch,</span>
+          <span class="us-so"> so that I can ensure adequate staffing coverage at all times.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-09: shift schedules recording employee, branch, date, and time slot. Employee cannot have overlapping shifts on the same day.</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Employee must be assigned to this branch</li><li>Shift date cannot be in the past</li><li>Start time must be before end time</li><li>No overlapping shifts on the same day for the same employee</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Shifts</span></div>
+    </div>
+
+    <!-- US-04 -->
+    <div class="us-card" data-actor="System Admin">
+      <div class="us-card-top">
+        <div class="us-card-id">US-04</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a System Admin,</span>
+          <span class="us-want"> I want to add global menu items with their category and optional add-ons,</span>
+          <span class="us-so"> so that all branches have a consistent menu catalogue to work from.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-12: item ID, name, description, base price, category enum · SRS-13: optional add-ons with name and price ≥ 0 · SRS-15: price > 0, name unique</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Item name must be unique in catalogue</li><li>Price must be greater than zero</li><li>Category must be from the defined enum</li><li>Add-on price must be zero or more</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Menu</span></div>
+    </div>
+
+    <!-- US-05 -->
+    <div class="us-card" data-actor="Branch Manager">
+      <div class="us-card-top">
+        <div class="us-card-id">US-05</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Branch Manager,</span>
+          <span class="us-want"> I want to set a custom price or mark a menu item as unavailable at my branch,</span>
+          <span class="us-so"> so that the branch reflects local pricing and only offers items it can serve.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-14: each branch may override the price or mark an item unavailable · SRS-15: override price must also be > 0</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Menu item must exist globally first</li><li>Override price, if set, must be greater than zero</li><li>Manager can only modify their own branch's settings</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Menu</span></div>
+    </div>
+
+    <!-- US-06 -->
+    <div class="us-card" data-actor="Waiter">
+      <div class="us-card-top">
+        <div class="us-card-id">US-06</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Waiter,</span>
+          <span class="us-want"> I want to register a new customer profile,</span>
+          <span class="us-so"> so that the customer can be linked to their orders and accumulate loyalty points.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-16: customer profile with name, phone, email, loyalty points starting at 0 · SRS-17: phone and email must be unique and valid format</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Phone must be unique and match valid format</li><li>Email must be unique and contain "@" and a domain</li><li>Full name must not be empty or contain numbers</li><li>Loyalty points auto-set to 0, not user input</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Customer</span></div>
+    </div>
+
+    <!-- US-07 -->
+    <div class="us-card" data-actor="Waiter">
+      <div class="us-card-top">
+        <div class="us-card-id">US-07</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Waiter,</span>
+          <span class="us-want"> I want to place a dine-in order for a customer with selected menu items, quantities, and special notes,</span>
+          <span class="us-so"> so that the kitchen receives the full preparation instructions.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-19: order type = Dine-In, linked to branch, customer, and staff · SRS-20: at least one item, quantity ≥ 1, special notes, add-ons · SRS-21: price snapshot at order time</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Customer must already exist</li><li>At least one item required</li><li>Item must be available at this branch</li><li>Quantity must be ≥ 1</li><li>Add-ons must belong to the chosen item</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order</span></div>
+    </div>
+
+    <!-- US-08 -->
+    <div class="us-card" data-actor="Waiter">
+      <div class="us-card-top">
+        <div class="us-card-id">US-08</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Waiter,</span>
+          <span class="us-want"> I want to place a delivery order and capture the delivery address,</span>
+          <span class="us-so"> so that a delivery record is automatically created and a delivery staff member can be assigned.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-19: order type = Delivery · SRS-30: must have a delivery address; delivery record auto-created · SRS-32: delivery staff must be available · Assumption A-04</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Delivery address is mandatory and cannot be empty</li><li>At least one delivery staff must be available</li><li>Delivery record is auto-created upon order save</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order · Delivery</span></div>
+    </div>
+
+    <!-- US-09 -->
+    <div class="us-card" data-actor="Chef">
+      <div class="us-card-top">
+        <div class="us-card-id">US-09</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Chef,</span>
+          <span class="us-want"> I want to update an order status from Pending to Preparing,</span>
+          <span class="us-so"> so that the system deducts inventory and the front-of-house knows the order is being prepared.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: status lifecycle Pending → Preparing · SRS-27: inventory deducted on this transition · SRS-28: low-stock warning before confirmation · Assumption A-02</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must currently be in "Pending" status</li><li>System checks inventory before transition</li><li>Warning shown if any ingredient falls below threshold (A-03)</li><li>Manager override required if insufficient stock (A-02)</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order · Inventory</span></div>
+    </div>
+
+    <!-- US-10 -->
+    <div class="us-card" data-actor="Chef">
+      <div class="us-card-top">
+        <div class="us-card-id">US-10</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Chef,</span>
+          <span class="us-want"> I want to mark a Preparing order as Served,</span>
+          <span class="us-so"> so that the cashier knows the food is ready for the customer to pay.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: status lifecycle Preparing → Served. Only valid forward transitions are allowed.</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must currently be in "Preparing" status</li><li>Backwards or skipped status transitions are rejected</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order</span></div>
+    </div>
+
+    <!-- US-11 -->
+    <div class="us-card" data-actor="Cashier">
+      <div class="us-card-top">
+        <div class="us-card-id">US-11</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Cashier,</span>
+          <span class="us-want"> I want to process payment for a served order by selecting a payment method,</span>
+          <span class="us-so"> so that the order is completed and the customer earns their loyalty points.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-23: payment only on Served orders, methods: Cash/Card/Wallet, status → Completed · SRS-24: loyalty points = floor(total)</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must be in "Served" status</li><li>Payment method must be Cash, Card, or Wallet</li><li>Total amount must be positive</li><li>Completed orders cannot be changed</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Payment</span></div>
+    </div>
+
+    <!-- US-12 -->
+    <div class="us-card" data-actor="Waiter">
+      <div class="us-card-top">
+        <div class="us-card-id">US-12</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Waiter,</span>
+          <span class="us-want"> I want to cancel a pending order,</span>
+          <span class="us-so"> so that kitchen resources are not used for an order the customer no longer wants.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: cancellation allowed from Pending by any staff. From Preparing only by Branch Manager.</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Only Pending orders can be cancelled by Waiters</li><li>Cancelled orders cannot be re-opened</li><li>A cancellation reason must be entered</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Order</span></div>
+    </div>
+
+    <!-- US-13 -->
+    <div class="us-card" data-actor="Delivery Staff">
+      <div class="us-card-top">
+        <div class="us-card-id">US-13</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Delivery Staff member,</span>
+          <span class="us-want"> I want to update the status of my assigned delivery to Delivered or Failed,</span>
+          <span class="us-so"> so that the branch knows whether the delivery was successful and can take action if not.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-31: delivery status = On the Way / Delivered / Failed · SRS-32: one active delivery at a time · SRS-33: failure requires a reason</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Staff can only update their own delivery</li><li>Only On the Way → Delivered OR On the Way → Failed is valid</li><li>Delivered sets timestamp to now (SRS-31)</li><li>Failed requires a reason to be entered (SRS-33)</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Delivery</span></div>
+    </div>
+
+    <!-- US-14 -->
+    <div class="us-card" data-actor="Branch Manager">
+      <div class="us-card-top">
+        <div class="us-card-id">US-14</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Branch Manager,</span>
+          <span class="us-want"> I want to view and update inventory levels at my branch,</span>
+          <span class="us-so"> so that I can restock ingredients and prevent kitchen shortages during service.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-25: branch inventory with name, unit, current quantity · SRS-28: low-stock threshold alert · Assumption A-03: threshold default = 5 units</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Quantity must be ≥ 0</li><li>Unit cannot be changed after creation</li><li>Ingredients below threshold (default 5) shown with a warning</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Inventory</span></div>
+    </div>
+
+    <!-- US-15 -->
+    <div class="us-card" data-actor="System Admin">
+      <div class="us-card-top">
+        <div class="us-card-id">US-15</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a System Admin,</span>
+          <span class="us-want"> I want to define a recipe for a menu item by linking it to ingredients with required quantities,</span>
+          <span class="us-so"> so that the system can automatically calculate and deduct inventory when an order is prepared.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-26: recipe = menu item + ingredient + quantity per serving · SRS-27: used for auto-deduction</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Menu item and all ingredients must already exist</li><li>Quantity per serving must be > 0</li><li>Same ingredient cannot appear twice in one recipe</li><li>At least one ingredient required to save the recipe</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Recipe</span></div>
+    </div>
+
+    <!-- US-16 -->
+    <div class="us-card" data-actor="Waiter">
+      <div class="us-card-top">
+        <div class="us-card-id">US-16</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Waiter,</span>
+          <span class="us-want"> I want to submit customer feedback for a completed order,</span>
+          <span class="us-so"> so that management can track satisfaction and identify areas of improvement.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-34: rating 1–5, optional comment · SRS-35: only on Completed orders, one per order · SRS-36: feedback ID, date, rating, comment, customer ref, order ref</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must be Completed</li><li>Order must belong to this customer</li><li>Rating must be an integer between 1 and 5</li><li>Only one feedback per order is allowed</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Feedback</span></div>
+    </div>
+
+    <!-- US-17 -->
+    <div class="us-card" data-actor="Branch Manager">
+      <div class="us-card-top">
+        <div class="us-card-id">US-17</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Branch Manager,</span>
+          <span class="us-want"> I want to view a daily revenue and order summary for my branch,</span>
+          <span class="us-so"> so that I can monitor branch performance and identify busy periods.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-23: Completed orders have a total amount. SRS-01: system supports multiple branches (implies per-branch reporting). Assumption A-06: role-based access.</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Date range: start must be ≤ end</li><li>Only Completed orders are counted</li><li>Report is limited to the manager's own branch</li><li>If no data found, display "No orders found" — not a zero-row table</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Reporting</span></div>
+    </div>
+
+    <!-- US-18 -->
+    <div class="us-card" data-actor="Branch Manager">
+      <div class="us-card-top">
+        <div class="us-card-id">US-18</div>
+        <div class="us-card-statement">
+          <span class="us-as">As a Branch Manager,</span>
+          <span class="us-want"> I want to cancel an order that is in the Preparing state,</span>
+          <span class="us-so"> so that I can handle exceptional situations where a customer leaves or an item is no longer available.</span>
+        </div>
+      </div>
+      <div class="us-card-bottom">
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: cancellation from Preparing is allowed by Branch Manager only.</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must be in "Preparing" status</li><li>Only Branch Manager role can perform this action</li><li>A cancellation reason must be recorded</li><li>Inventory deducted earlier is NOT automatically reversed (manual adjustment required)</li></ul></div>
+      </div>
+      <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Order</span></div>
+    </div>
+
+  </div><!-- end us-list -->
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 06 — BUSINESS RULES
+══════════════════════════════════════════ -->
+<section class="sec" id="s6">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 06 · Derived from SRS + Assumptions</div>
+    <h2 class="sec-title">Business Rules</h2>
+    <p class="sec-sub">Constraints the system must always enforce — every rule points to its SRS source.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What are Business Rules?</div>
+    <p>Business rules are <strong>non-negotiable constraints</strong> that govern how the system behaves. They are different from user stories: stories describe what someone wants to do, while business rules describe <em>what the system must enforce regardless of who is asking</em>.</p>
+    <p>Business rules come from the SRS (explicit constraints like "salary must be positive") and from assumptions (decisions we made to fill SRS gaps). Later, when you write code, each business rule becomes a <strong>validation or guard clause</strong> in your methods.</p>
+  </div>
+
+  <!-- Branch & Employee -->
+  <div class="br-group">
+    <div class="br-group-heading">🏪 Branch &amp; Employee Rules</div>
+    <div class="br-row"><div class="br-id">BR-01</div><div class="br-body">Every branch must have <strong>exactly one Branch Manager</strong> at all times. A branch cannot be saved without a valid, existing manager assigned to it. <em>(SRS-05)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-02</div><div class="br-body">Employee position must be one of the five defined values: Chef, Waiter, Cashier, Branch Manager, Delivery Staff. Free-text positions are rejected. <em>(SRS-07)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+    <div class="br-row"><div class="br-id">BR-03</div><div class="br-body">An employee's <strong>salary must be a positive number</strong> and their <strong>date of hire cannot be a future date</strong>. <em>(SRS-10)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+    <div class="br-row"><div class="br-id">BR-04</div><div class="br-body">An employee <strong>cannot have two overlapping shifts on the same date</strong>, whether at the same or different branch. <em>(SRS-09)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-05</div><div class="br-body">A branch cannot be deleted if it still has employees assigned to it or active orders linked to it. <em>(SRS-08, Referential Integrity)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+  </div>
+
+  <!-- Menu -->
+  <div class="br-group">
+    <div class="br-group-heading">🍽️ Menu Rules</div>
+    <div class="br-row"><div class="br-id">BR-06</div><div class="br-body">Menu item base prices and any branch price overrides must be <strong>greater than zero</strong>. <em>(SRS-15)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+    <div class="br-row"><div class="br-id">BR-07</div><div class="br-body">An item <strong>marked as unavailable at a branch</strong> cannot be added to any new order at that branch. This does not affect existing orders. <em>(SRS-14)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-08</div><div class="br-body">An add-on can only be selected for the menu item it belongs to. It cannot be applied to a different item in the same order. <em>(SRS-13)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+  </div>
+
+  <!-- Order -->
+  <div class="br-group">
+    <div class="br-group-heading">📋 Order Rules</div>
+    <div class="br-row"><div class="br-id">BR-09</div><div class="br-body">An order must contain <strong>at least one order item</strong> before it can be saved. An empty order is invalid. <em>(SRS-20)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-10</div><div class="br-body">Order status can only advance forward: <strong>Pending → Preparing → Served → Completed</strong>. The only exceptions are cancellation (Pending by staff, Preparing by manager only). <em>(SRS-22)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-11</div><div class="br-body">The unit price stored on an order item is a <strong>snapshot of the price at placement time</strong>, including any branch override. Any selected add-on prices are also stored as snapshots at order time. Future catalogue changes must not alter existing orders. <em>(SRS-21)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-12</div><div class="br-body"><strong>Delivery orders</strong> require a non-empty delivery address. Dine-in and takeaway orders must never have a delivery record. <em>(SRS-30)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-13</div><div class="br-body">Payment can only be processed when the order status is <strong>Served</strong>. After payment the order is Completed and immutable. <em>(SRS-23)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+  </div>
+
+  <!-- Inventory -->
+  <div class="br-group">
+    <div class="br-group-heading">🥕 Inventory &amp; Recipe Rules</div>
+    <div class="br-row"><div class="br-id">BR-14</div><div class="br-body">Inventory is <strong>branch-specific</strong>. The same ingredient at Branch A and Branch B is tracked independently. <em>(SRS-25)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+    <div class="br-row"><div class="br-id">BR-15</div><div class="br-body">Inventory <strong>auto-deducts on Pending → Preparing</strong> based on recipe quantities × ordered quantities. <em>(SRS-27)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+    <div class="br-row"><div class="br-id">BR-16</div><div class="br-body">Inventory quantity <strong>cannot be set below zero</strong>. If a deduction would cause this, a warning is shown before the transition is confirmed. Manager override is required to proceed. <em>(SRS-28, A-02)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+    <div class="br-row"><div class="br-id">BR-17</div><div class="br-body">An ingredient cannot appear <strong>more than once in the same recipe</strong>. Each ingredient entry in a recipe must be unique. <em>(SRS-26)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+  </div>
+
+  <!-- Delivery & Feedback -->
+  <div class="br-group">
+    <div class="br-group-heading">🚚 Delivery &amp; Feedback Rules</div>
+    <div class="br-row"><div class="br-id">BR-18</div><div class="br-body">A delivery staff member can only be assigned to <strong>one active delivery</strong> at a time. They become available again when status changes to Delivered or Failed. <em>(SRS-32)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-19</div><div class="br-body">A failed delivery must have a <strong>reason recorded</strong> before the status can be saved as Failed. The linked order is flagged for manager review. <em>(SRS-33)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-20</div><div class="br-body">Only <strong>one feedback record</strong> per order per customer is allowed. Submitting a second feedback for the same order must be rejected. <em>(SRS-35)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-21</div><div class="br-body"><strong>Loyalty points = floor(total amount)</strong>. Points are awarded automatically at payment. Points only increase, never decrease. <em>(SRS-24)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+  </div>
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 07 — USE CASES
+══════════════════════════════════════════ -->
+<section class="sec" id="s7">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 07 · Derived from User Stories</div>
+    <h2 class="sec-title">Main Use Cases</h2>
+    <p class="sec-sub">Step-by-step interaction flows between actors and the system. These are derived from the user stories.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What is a Use Case?</div>
+    <p>A use case describes <strong>exactly how an actor achieves their goal</strong> through a sequence of steps. Where a user story says <em>"I want to place a dine-in order"</em>, the use case shows the full conversation between the actor and the system: every step, every decision point, every alternative path.</p>
+    <p>Use cases are derived directly from user stories: one user story often produces one use case. They should still be business-language, not code. Click any use case to expand it.</p>
+  </div>
+
+  <div class="uc-list">
+
+    <!-- UC-01 -->
+    <div class="uc-card">
+      <div class="uc-header" onclick="toggleUC(this)">
+        <div class="uc-hid">UC-01</div>
+        <div class="uc-hname">Place a Dine-In Order</div>
+        <div class="uc-hactor">Waiter · from US-07</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Trigger</td><td>A customer is seated and ready to order</td></tr>
+          <tr><td>Pre-conditions</td><td>Waiter is logged in at this branch · Customer exists in the system · At least one menu item is available at this branch</td></tr>
+          <tr><td>Main Flow</td><td><ol class="uc-steps">
+            <li>Waiter selects "New Dine-In Order" from the order menu</li>
+            <li>System prompts: enter Customer ID or phone number</li>
+            <li>Waiter enters customer identifier · System validates and displays customer name for confirmation</li>
+            <li>System shows available menu items at this branch with current prices</li>
+            <li>Waiter selects a menu item by ID and enters quantity</li>
+            <li>System confirms item added and shows running total</li>
+            <li>Waiter optionally enters a special note for the item (e.g., "no onions")</li>
+            <li>Waiter optionally selects available add-ons for the item</li>
+            <li>Steps 5–8 repeat until Waiter selects "Confirm Order"</li>
+            <li>System displays full order summary: items, quantities, add-ons, notes, total</li>
+            <li>Waiter confirms · System saves order with status = Pending · Displays the new Order ID</li>
+          </ol></td></tr>
+          <tr><td>Alternative Flows</td><td><ul class="uc-alt">
+            <li>Step 3: Customer not found → System offers to register a new customer first, then returns to Step 3</li>
+            <li>Step 5: Item ID not found → Error shown · Re-prompt</li>
+            <li>Step 5: Item marked unavailable at this branch → Error shown · Re-prompt with another item</li>
+            <li>Step 5: Quantity less than 1 → Error shown · Re-prompt</li>
+            <li>Step 9: Waiter selects "Cancel" → Order discarded · No record saved</li>
+          </ul></td></tr>
+          <tr><td>Post-conditions</td><td>Order saved with status = Pending · Linked to customer, branch, and waiter · Visible in kitchen queue</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- UC-02 -->
+    <div class="uc-card">
+      <div class="uc-header" onclick="toggleUC(this)">
+        <div class="uc-hid">UC-02</div>
+        <div class="uc-hname">Process Order Payment</div>
+        <div class="uc-hactor">Cashier · from US-11</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Trigger</td><td>Customer is ready to pay for their served order</td></tr>
+          <tr><td>Pre-conditions</td><td>Order exists with status = Served · Cashier is assigned to the same branch</td></tr>
+          <tr><td>Main Flow</td><td><ol class="uc-steps">
+            <li>Cashier selects "Process Payment" from the menu</li>
+            <li>System prompts for Order ID</li>
+            <li>Cashier enters Order ID · System validates and displays order summary and total</li>
+            <li>System prompts: select payment method — Cash, Card, or Wallet</li>
+            <li>Cashier selects a method</li>
+            <li>System calculates loyalty points = floor(total amount)</li>
+            <li>System marks order status = Completed</li>
+            <li>System adds loyalty points to the customer's balance</li>
+            <li>System displays confirmation: payment method, total, loyalty points earned</li>
+          </ol></td></tr>
+          <tr><td>Alternative Flows</td><td><ul class="uc-alt">
+            <li>Step 3: Order not found → Error shown · Re-prompt</li>
+            <li>Step 3: Order is not in "Served" status → System blocks · Displays current status and reason</li>
+            <li>Step 5: Invalid payment method → Error · Re-prompt with valid options</li>
+          </ul></td></tr>
+          <tr><td>Post-conditions</td><td>Order status = Completed · Payment method recorded · Customer loyalty points updated · Order is now immutable</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- UC-03 -->
+    <div class="uc-card">
+      <div class="uc-header" onclick="toggleUC(this)">
+        <div class="uc-hid">UC-03</div>
+        <div class="uc-hname">Update Order Status in Kitchen</div>
+        <div class="uc-hactor">Chef · from US-09, US-10</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Trigger</td><td>Chef is ready to begin or has finished preparing an order</td></tr>
+          <tr><td>Pre-conditions</td><td>Chef is assigned to the branch · Order exists with status = Pending or Preparing</td></tr>
+          <tr><td>Main Flow</td><td><ol class="uc-steps">
+            <li>Chef selects "Kitchen Queue" · System shows all Pending orders for this branch</li>
+            <li>Chef selects an Order ID to update</li>
+            <li>System displays: items, quantities, special notes</li>
+            <li>Chef selects "Start Preparing" (Pending → Preparing)</li>
+            <li>System checks inventory: calculates required ingredients for all items × quantities</li>
+            <li>All ingredients sufficient: system deducts inventory · Updates status to Preparing · Shows any low-stock alerts</li>
+            <li>When food is ready: Chef selects the same order · Selects "Mark as Served"</li>
+            <li>System updates status to Served · Order now appears in Cashier queue</li>
+          </ol></td></tr>
+          <tr><td>Alternative Flows</td><td><ul class="uc-alt">
+            <li>Step 5: Any ingredient insufficient → System shows which ingredients are below requirement</li>
+            <li>Step 5: Manager override: Manager confirms → System proceeds with deduction and status change</li>
+            <li>Any step: invalid transition attempted → System rejects with current status shown</li>
+          </ul></td></tr>
+          <tr><td>Post-conditions</td><td>Status updated accordingly · Inventory deducted (on Preparing) · Low-stock alerts shown if applicable</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- UC-04 -->
+    <div class="uc-card">
+      <div class="uc-header" onclick="toggleUC(this)">
+        <div class="uc-hid">UC-04</div>
+        <div class="uc-hname">Manage a Delivery</div>
+        <div class="uc-hactor">Waiter + Delivery Staff · from US-08, US-13</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Trigger</td><td>A delivery-type order is placed OR a delivery staff member needs to update their delivery status</td></tr>
+          <tr><td>Pre-conditions</td><td>Order type = Delivery · Delivery address captured · At least one delivery staff member is available</td></tr>
+          <tr><td>Main Flow</td><td><ol class="uc-steps">
+            <li>When order type is Delivery and Waiter confirms: system auto-creates a delivery record linked to the order</li>
+            <li>Waiter (or Manager) selects an available delivery staff member from the list</li>
+            <li>System assigns staff · Sets delivery status = On the Way</li>
+            <li>Delivery staff selects "My Deliveries" · System shows their active delivery with address and order details</li>
+            <li>Staff completes delivery · Selects "Mark as Delivered"</li>
+            <li>System sets delivery timestamp to current time · Status = Delivered</li>
+            <li>Delivery staff availability is restored</li>
+          </ol></td></tr>
+          <tr><td>Alternative Flows</td><td><ul class="uc-alt">
+            <li>Step 2: No delivery staff available → Warning shown · Order queued until staff is available</li>
+            <li>Step 5: Delivery failed → Staff selects "Mark as Failed" · Must enter reason · Status = Failed</li>
+            <li>Step 5 (Failed): Order is flagged for Manager review</li>
+          </ul></td></tr>
+          <tr><td>Post-conditions</td><td>Delivery record updated with final status and timestamp · Delivery staff availability restored · Failed deliveries flagged for manager</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- UC-05 -->
+    <div class="uc-card">
+      <div class="uc-header" onclick="toggleUC(this)">
+        <div class="uc-hid">UC-05</div>
+        <div class="uc-hname">Submit Customer Feedback</div>
+        <div class="uc-hactor">Waiter · from US-16</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Trigger</td><td>A customer wishes to leave feedback after a completed order</td></tr>
+          <tr><td>Pre-conditions</td><td>Order exists with status = Completed · No prior feedback exists for this order from this customer</td></tr>
+          <tr><td>Main Flow</td><td><ol class="uc-steps">
+            <li>Waiter selects "Submit Feedback" from the menu</li>
+            <li>System prompts for Customer ID and Order ID</li>
+            <li>Waiter enters both · System validates: order belongs to this customer</li>
+            <li>System verifies: order is Completed AND no prior feedback exists for this order</li>
+            <li>System prompts for rating (1–5) and optional comments</li>
+            <li>Waiter enters rating and optionally the customer's comments</li>
+            <li>System saves feedback with: feedback ID, date, rating, comment, customer ID, order ID</li>
+            <li>System confirms submission</li>
+          </ol></td></tr>
+          <tr><td>Alternative Flows</td><td><ul class="uc-alt">
+            <li>Step 3: Order does not belong to the customer → Error · Stop</li>
+            <li>Step 4: Order is not Completed → Error: "Order must be completed before feedback can be submitted"</li>
+            <li>Step 4: Feedback already exists for this order → Error: "Feedback already submitted for this order"</li>
+            <li>Step 6: Rating not between 1 and 5 → Error · Re-prompt</li>
+          </ul></td></tr>
+          <tr><td>Post-conditions</td><td>Feedback record saved · This order cannot receive additional feedback</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- uc-list -->
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 08 — ERD (INTRO & BRIDGE TO CLASSES)
+══════════════════════════════════════════ -->
+<section class="sec" id="s8">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 08 · From Requirements to Data Model</div>
+    <h2 class="sec-title">Entity-Relationship Diagram (ERD)</h2>
+    <p class="sec-sub">We now move from business language into data modeling. This is the first technical step.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 What is an ERD and Why Do We Need It?</div>
+    <p>An Entity-Relationship Diagram (ERD) is a <strong>visual map of the data the system needs to remember</strong>. It shows what "things" (entities) exist, what information each thing holds (attributes), and how things relate to each other (relationships).</p>
+    <p>We draw the ERD <em>before</em> writing classes because it forces us to think clearly about the data and its relationships without worrying about code yet. It answers: <em>what data do we need, and how is it connected?</em></p>
+  </div>
+
+  <div class="box box-warn">
+    <div class="box-label">⚠️ Important — We Are NOT Using a Database</div>
+    <p>The ERD is being used here <strong>as a thinking and modeling tool only</strong>. We will not build any database. All data will be saved to and loaded from <strong>plain files</strong> (text, CSV, or JSON). The ERD helps us understand the relationships between our data so we can design our classes and file structures correctly.</p>
+    <p>Think of it this way: an ERD shows the <em>what</em> and <em>how it connects</em>. Files are just the storage format. Classes are how we represent it in code.</p>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">🔎 How Are Entities Derived?</div>
+    <p>Now that we have a complete SRS, we can finally identify entities <strong>systematically</strong> — not by guessing. We go through each SRS chapter and ask: <em>"What thing does this chapter ask us to store information about?"</em> Each chapter typically produces one or more entities. Every entity we identify must trace back to a requirement in the SRS.</p>
+  </div>
+
+  <div class="extract-flow">
+    <div class="extract-title">🔎 Tracing Entities from SRS Chapters</div>
+    <div style="overflow-x:auto;">
+    <table class="erd-rel-table">
+      <thead><tr><th>SRS Chapter</th><th>Entity Identified</th><th>Key SRS Requirement</th></tr></thead>
+      <tbody>
+        <tr><td>Ch.2 Branch Management</td><td>Branch</td><td>SRS-04: "Each branch has a unique identifier, name, address..."</td></tr>
+        <tr><td>Ch.3 Employee Management</td><td>Employee, ShiftSchedule</td><td>SRS-07: employee details · SRS-09: shift records</td></tr>
+        <tr><td>Ch.4 Menu Management</td><td>MenuItem, AddOn, BranchMenuItem</td><td>SRS-12: catalogue · SRS-13: add-ons · SRS-14: per-branch override</td></tr>
+        <tr><td>Ch.5 Customer Management</td><td>Customer</td><td>SRS-16: customer profile</td></tr>
+        <tr><td>Ch.6 Order Management</td><td>Order, OrderItem, OrderItemAddOn</td><td>SRS-19: order · SRS-20: order items and selected add-ons</td></tr>
+        <tr><td>Ch.7 Inventory &amp; Recipe</td><td>Ingredient, Inventory, Recipe</td><td>SRS-25: branch inventory · SRS-26: recipe (associative)</td></tr>
+        <tr><td>Ch.8 Delivery</td><td>DeliveryProfile, DeliveryRecord</td><td>SRS-29: delivery staff details · SRS-31: delivery record</td></tr>
+        <tr><td>Ch.9 Feedback</td><td>Feedback</td><td>SRS-36: feedback record</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-label">Entities &amp; Their Attributes</div></div>
+
+  <div class="erd-entity-grid">
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🏪 Branch</div>
+      <div class="erd-attr"><span class="erd-attr-name">branch_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">name</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">address</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">contact_number</span><span class="erd-badge eb-val">Validated</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">opening_hours</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">manager_id</span><span class="erd-badge eb-fk">FK → Employee</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">👤 Employee</div>
+      <div class="erd-attr"><span class="erd-attr-name">employee_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">full_name</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">position</span><span class="erd-badge eb-en">Enum</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">salary</span><span class="erd-badge eb-val">> 0</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">date_of_hire</span><span class="erd-badge eb-val">≤ Today</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">phone_number</span><span class="erd-badge eb-val">Unique+Format</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">email</span><span class="erd-badge eb-val">Unique+Format</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">primary_branch_id</span><span class="erd-badge eb-fk">FK → Branch</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">📅 ShiftSchedule</div>
+      <div class="erd-attr"><span class="erd-attr-name">shift_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">employee_id</span><span class="erd-badge eb-fk">FK → Employee</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">branch_id</span><span class="erd-badge eb-fk">FK → Branch</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">date</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">start_time</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">end_time</span><span class="erd-badge eb-val">> start</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🍽️ MenuItem</div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">name</span><span class="erd-badge eb-req">Unique</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">description</span><span class="erd-badge eb-opt">Optional</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">base_price</span><span class="erd-badge eb-val">> 0</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">category</span><span class="erd-badge eb-en">Enum</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">➕ AddOn</div>
+      <div class="erd-attr"><span class="erd-attr-name">addon_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-fk">FK → MenuItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">name</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">extra_price</span><span class="erd-badge eb-val">≥ 0</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🔀 BranchMenuItem <small style="font-size:9px;opacity:.7">(Override)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">branch_id</span><span class="erd-badge eb-fk">FK → Branch</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-fk">FK → MenuItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">override_price</span><span class="erd-badge eb-opt">Optional</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">is_available</span><span class="erd-badge eb-req">Required</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">👥 Customer</div>
+      <div class="erd-attr"><span class="erd-attr-name">customer_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">full_name</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">phone_number</span><span class="erd-badge eb-val">Unique+Format</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">email</span><span class="erd-badge eb-val">Unique+Format</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">loyalty_points</span><span class="erd-badge eb-val">≥ 0</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">📋 Order</div>
+      <div class="erd-attr"><span class="erd-attr-name">order_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">customer_id</span><span class="erd-badge eb-fk">FK → Customer</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">branch_id</span><span class="erd-badge eb-fk">FK → Branch</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">staff_id</span><span class="erd-badge eb-fk">FK → Employee</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">order_type</span><span class="erd-badge eb-en">Enum</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">date_time</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">total_amount</span><span class="erd-badge eb-val">≥ 0</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">payment_method</span><span class="erd-badge eb-en">Enum</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">status</span><span class="erd-badge eb-en">Enum</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">📦 OrderItem <small style="font-size:9px;opacity:.7">(Associative)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">order_id</span><span class="erd-badge eb-fk">FK → Order</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-fk">FK → MenuItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">quantity</span><span class="erd-badge eb-val">≥ 1</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">unit_price</span><span class="erd-badge eb-val">Snapshot</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">special_notes</span><span class="erd-badge eb-opt">Optional</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🧩 OrderItemAddOn <small style="font-size:9px;opacity:.7">(Associative)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">order_id</span><span class="erd-badge eb-fk">FK → OrderItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-fk">FK → OrderItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">addon_id</span><span class="erd-badge eb-fk">FK → AddOn</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">addon_name</span><span class="erd-badge eb-val">Snapshot</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">addon_price</span><span class="erd-badge eb-val">Snapshot</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🥕 Ingredient</div>
+      <div class="erd-attr"><span class="erd-attr-name">ingredient_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">name</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">unit</span><span class="erd-badge eb-en">Enum</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">📊 Inventory <small style="font-size:9px;opacity:.7">(Per Branch)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">branch_id</span><span class="erd-badge eb-fk">FK → Branch</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">ingredient_id</span><span class="erd-badge eb-fk">FK → Ingredient</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">current_qty</span><span class="erd-badge eb-val">≥ 0</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">low_threshold</span><span class="erd-badge eb-val">Default 5</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">📝 Recipe <small style="font-size:9px;opacity:.7">(Associative)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">item_id</span><span class="erd-badge eb-fk">FK → MenuItem</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">ingredient_id</span><span class="erd-badge eb-fk">FK → Ingredient</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">qty_per_serving</span><span class="erd-badge eb-val">> 0</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🚴 DeliveryProfile <small style="font-size:9px;opacity:.7">(Composed with Employee)</small></div>
+      <div class="erd-attr"><span class="erd-attr-name">employee_id</span><span class="erd-badge eb-fk">FK → Employee</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">vehicle_type</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">license_number</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">assigned_area</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">is_available</span><span class="erd-badge eb-val">Boolean</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">🚚 DeliveryRecord</div>
+      <div class="erd-attr"><span class="erd-attr-name">delivery_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">order_id</span><span class="erd-badge eb-fk">FK → Order</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">staff_id</span><span class="erd-badge eb-fk">FK → DeliveryProfile</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">delivery_address</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">delivery_time</span><span class="erd-badge eb-opt">Optional</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">status</span><span class="erd-badge eb-en">Enum</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">failure_reason</span><span class="erd-badge eb-opt">If Failed</span></div>
+    </div>
+
+    <div class="erd-entity">
+      <div class="erd-entity-head">⭐ Feedback</div>
+      <div class="erd-attr"><span class="erd-attr-name">feedback_id</span><span class="erd-badge eb-pk">PK</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">customer_id</span><span class="erd-badge eb-fk">FK → Customer</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">order_id</span><span class="erd-badge eb-fk">FK → Order</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">date</span><span class="erd-badge eb-req">Required</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">rating</span><span class="erd-badge eb-val">1–5</span></div>
+      <div class="erd-attr"><span class="erd-attr-name">comments</span><span class="erd-badge eb-opt">Optional</span></div>
+    </div>
+
+  </div><!-- entity-grid -->
+
+  <div class="divider"><div class="divider-label">Key Relationships Summary</div></div>
+
+  <div style="overflow-x:auto;">
+  <table class="erd-rel-table">
+    <thead><tr><th>Entity A</th><th>Relationship</th><th>Entity B</th><th>Type</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Branch</td><td>managed by</td><td>Employee</td><td><code>1 : 1</code></td><td>Manager is an Employee with position = Branch Manager</td></tr>
+      <tr><td>Employee</td><td>works shifts at</td><td>Branch</td><td><code>M : N</code></td><td>Via ShiftSchedule (associative entity)</td></tr>
+      <tr><td>Branch</td><td>overrides pricing of</td><td>MenuItem</td><td><code>M : N</code></td><td>Via BranchMenuItem (associative entity)</td></tr>
+      <tr><td>Customer</td><td>places</td><td>Order</td><td><code>1 : N</code></td><td>Customer can have many orders</td></tr>
+      <tr><td>Order</td><td>contains</td><td>MenuItem</td><td><code>M : N</code></td><td>Via OrderItem (associative entity) — <em>same item can appear in many orders</em></td></tr>
+      <tr><td>OrderItem</td><td>selects</td><td>AddOn</td><td><code>M : N</code></td><td>Via OrderItemAddOn with snapshot name and price</td></tr>
+      <tr><td>MenuItem</td><td>uses</td><td>Ingredient</td><td><code>M : N</code></td><td>Via Recipe (associative entity)</td></tr>
+      <tr><td>Branch</td><td>stocks</td><td>Ingredient</td><td><code>M : N</code></td><td>Via Inventory (per-branch stock levels)</td></tr>
+      <tr><td>Order</td><td>has</td><td>DeliveryRecord</td><td><code>1 : 1</code></td><td>Only for Delivery-type orders</td></tr>
+      <tr><td>Customer</td><td>submits</td><td>Feedback</td><td><code>1 : N</code></td><td>One per completed order only</td></tr>
+      <tr><td>Employee</td><td>may have</td><td>DeliveryProfile</td><td><code>1 : 0..1</code></td><td>Composition preferred over inheritance for delivery-specific data</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box box-green" style="margin-top:28px;">
+    <div class="box-label">➡️ What Comes Next — The Bridge to Class Diagram</div>
+    <p>Now that we have the ERD, we can produce the Class Diagram. The translation is direct and mechanical:</p>
+    <p><strong>Each entity → one class.</strong> Each attribute → a field in that class. Each relationship → an association, list, or composition. In this project we will prefer <strong>interfaces and composition</strong> in most cases, and use inheritance only when it keeps the model clearly simpler. Associative entities like OrderItem, OrderItemAddOn, Recipe, and ShiftSchedule become their own classes with references to the classes they connect. The Class Diagram is documented in the next section of this project.</p>
+  </div>
+
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 09 — CLASS DIAGRAM
+══════════════════════════════════════════ -->
+<section class="sec" id="s9">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 09 · Incremental Design</div>
+    <h2 class="sec-title">Class Diagram Plan</h2>
+    <p class="sec-sub">Build the class diagram in small clicks. Each step adds only what is needed next.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 How We Will Build It</div>
+    <p>We will not draw the full class diagram all at once. That usually creates noise and confusion. Instead, we build it incrementally: <strong>start with the core entities</strong>, then add order details, then add operational support classes, then add interfaces and helper abstractions.</p>
+    <p>This fits the project goals: <strong>keep it simple</strong>, prefer composition over inheritance, and make every class earn its place.</p>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-label">🧠 Design Direction</div>
+    <p>The class diagram will use <strong>interfaces and composition in most places</strong>. Delivery-specific data will be composed with <code>Employee</code>, not modeled through deep inheritance. Small factory methods may be shown as static creation methods on entities or dedicated lightweight factory classes only where they make creation cleaner.</p>
+  </div>
+
+  <div class="uc-list">
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-01</div>
+        <div class="uc-hname">Start With the Core Business Classes</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Classes</td><td><code>Branch</code>, <code>Employee</code>, <code>Customer</code>, <code>MenuItem</code>, <code>Order</code></td></tr>
+          <tr><td>Why first?</td><td>These are the main nouns of the domain. Without them, nothing else makes sense.</td></tr>
+          <tr><td>Main relationships</td><td><code>Branch</code> has employees and orders · <code>Customer</code> places orders · <code>Order</code> belongs to one branch and one customer</td></tr>
+          <tr><td>Rule</td><td>Draw only the class names and the simplest associations first. Do not add all fields yet.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-02</div>
+        <div class="uc-hname">Add the Order Detail Layer</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Classes</td><td><code>OrderItem</code>, <code>AddOn</code>, <code>OrderItemAddOn</code></td></tr>
+          <tr><td>Why now?</td><td>Orders become useful only when we can represent purchased items, notes, and selected add-ons.</td></tr>
+          <tr><td>Design note</td><td><code>OrderItemAddOn</code> is kept as its own class so add-on selections and snapshot prices remain explicit and clean.</td></tr>
+          <tr><td>Rule</td><td>Keep price snapshots in transaction classes, not in catalogue classes.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-03</div>
+        <div class="uc-hname">Add Branch-Specific Configuration</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Classes</td><td><code>BranchMenuItem</code>, <code>ShiftSchedule</code></td></tr>
+          <tr><td>Purpose</td><td>These are associative classes that carry real behavior and validation, not just foreign keys.</td></tr>
+          <tr><td>Design note</td><td><code>BranchMenuItem</code> stores branch-specific availability and optional price override. <code>ShiftSchedule</code> records time-based assignment and prevents overlap.</td></tr>
+          <tr><td>Rule</td><td>Whenever an M:N relationship has its own data, it becomes a real class.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-04</div>
+        <div class="uc-hname">Add Inventory and Recipe Classes</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Classes</td><td><code>Ingredient</code>, <code>InventoryItem</code>, <code>RecipeItem</code></td></tr>
+          <tr><td>Purpose</td><td>These classes support kitchen operations and order preparation without polluting <code>MenuItem</code> or <code>Branch</code> with too much detail.</td></tr>
+          <tr><td>Composition note</td><td><code>Branch</code> composes a collection of inventory items. <code>MenuItem</code> composes a recipe made of recipe items.</td></tr>
+          <tr><td>Rule</td><td>Use small focused classes rather than one large inventory manager entity.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-05</div>
+        <div class="uc-hname">Add Delivery and Feedback</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Classes</td><td><code>DeliveryProfile</code>, <code>DeliveryRecord</code>, <code>Feedback</code></td></tr>
+          <tr><td>Design note</td><td><code>DeliveryProfile</code> is composed with <code>Employee</code> for delivery-specific details. This keeps the model flatter and simpler than role inheritance.</td></tr>
+          <tr><td>Business note</td><td><code>DeliveryRecord</code> belongs only to delivery orders. <code>Feedback</code> belongs only to completed orders.</td></tr>
+          <tr><td>Rule</td><td>Add optional or specialized classes late in the diagram, after the core is stable.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="uc-card">
+      <div class="uc-header" onclick="togglePlan(this)">
+        <div class="uc-hid">CD-06</div>
+        <div class="uc-hname">Add Interfaces and Factory Methods</div>
+        <div class="uc-hactor">Click to reveal</div>
+        <div class="uc-chevron">▼</div>
+      </div>
+      <div class="uc-body-inner">
+        <table class="uc-table">
+          <tr><td>Likely interfaces</td><td><code>IFileRepository&lt;T&gt;</code>, <code>ISeeder</code>, <code>IConsoleFormatter</code>, and small behavior-focused interfaces only when there is real reuse.</td></tr>
+          <tr><td>Factory use</td><td>Simple factory methods can create valid <code>Branch</code>, <code>Employee</code>, <code>Customer</code>, or <code>Order</code> objects with basic validation and default values.</td></tr>
+          <tr><td>Important limit</td><td>Factories stay lightweight. Business workflows still belong to application services, not to factories.</td></tr>
+          <tr><td>Rule</td><td>Add abstractions last, after the concrete domain is already clear.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-green" style="margin-top:28px;">
+    <div class="box-label">✅ Final Class Diagram Goal</div>
+    <p>The final class diagram should be <strong>readable on one screen or one page</strong>. If it becomes crowded, that is a sign to split it into a <strong>domain view</strong> and an <strong>application/support view</strong>, not a sign to add more complexity.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 10 — OOP MAPPING
+══════════════════════════════════════════ -->
+<section class="sec" id="s10">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 10 · Analyze Before Coding</div>
+    <h2 class="sec-title">OOP Concepts Mapping</h2>
+    <p class="sec-sub">A short analysis of which OOP concepts we will use, where we will use them, and why.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📖 Why This Section Exists</div>
+    <p>This section is not about showing off concepts. It is about making <strong>deliberate design choices</strong>. We will use only the OOP ideas that genuinely help this project stay clean, simple, and professional.</p>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="erd-rel-table">
+      <thead>
+        <tr><th>Concept</th><th>Will We Use It?</th><th>Where?</th><th>Why?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Encapsulation</td><td><strong>Yes</strong></td><td>All entities such as <code>Order</code>, <code>Branch</code>, <code>Customer</code></td><td>To keep state valid and ensure rules are enforced through methods instead of uncontrolled public mutation.</td></tr>
+        <tr><td>Abstraction</td><td><strong>Yes</strong></td><td>Application services, repositories, console formatting helpers</td><td>To separate domain logic from file storage and UI concerns.</td></tr>
+        <tr><td>Interfaces</td><td><strong>Yes</strong></td><td><code>IFileRepository&lt;T&gt;</code>, <code>ISeeder</code>, optional formatting or menu contracts</td><td>Interfaces give us clean boundaries between Core, Infrastructure, and UI without adding heavy patterns.</td></tr>
+        <tr><td>Composition</td><td><strong>Yes, heavily</strong></td><td><code>Order</code> with items, <code>Branch</code> with inventory, <code>Employee</code> with optional <code>DeliveryProfile</code></td><td>This is the main modeling style for the project because it is simpler, clearer, and more flexible than inheritance in this domain.</td></tr>
+        <tr><td>Inheritance</td><td><strong>Minimal</strong></td><td>Only if a later need is truly obvious and simplifies the design</td><td>We deliberately avoid deep hierarchies to keep the model easy for students to understand and maintain.</td></tr>
+        <tr><td>Polymorphism</td><td><strong>Limited but useful</strong></td><td>Mostly through interfaces, not class hierarchies</td><td>We want behavior substitution where it helps, but not complex inheritance trees.</td></tr>
+        <tr><td>Factory Methods</td><td><strong>Yes, simple only</strong></td><td>Entity creation for valid objects with IDs/default values</td><td>They keep creation readable and centralized without introducing a full factory pattern infrastructure.</td></tr>
+        <tr><td>Extension Methods</td><td><strong>Yes</strong></td><td>Validation helpers, formatting helpers, ID normalization, common file/path helpers</td><td>They improve readability for small repeated logic, as long as business rules stay explicit.</td></tr>
+        <tr><td>Extension Properties (.NET 10)</td><td><strong>Maybe, but carefully</strong></td><td>Only tiny convenience helpers where they clearly improve readability</td><td>We will keep their use limited and never hide important logic behind them.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"><div class="divider-label">Design Principles</div></div>
+
+  <div class="two-col">
+    <div class="scope-block in">
+      <div class="scope-block-head">✅ Principles We Will Follow</div>
+      <div class="scope-block-item"><span class="si">→</span><span><strong>KISS</strong>: choose the simplest design that satisfies the requirement</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span><strong>SRP</strong>: each class should have one clear responsibility</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span><strong>OCP/DIP</strong>: use interfaces at project boundaries, especially persistence</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Prefer explicit validation and guard clauses over hidden magic</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Keep methods small, names clear, and flows predictable</span></div>
+    </div>
+    <div class="scope-block out">
+      <div class="scope-block-head">🚫 Things We Will Avoid</div>
+      <div class="scope-block-item"><span class="si">→</span><span>Deep inheritance hierarchies for staff roles</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Generic frameworks or patterns that students do not need yet</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Huge service classes that know everything about the system</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Extension methods that hide real business decisions</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Over-engineering in the name of being “professional”</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 11 — CONSOLE FLOW
+══════════════════════════════════════════ -->
+<section class="sec" id="s11">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 11 · UI Planning</div>
+    <h2 class="sec-title">Console Structure</h2>
+    <p class="sec-sub">A simple menu-oriented UI plan for the console project. No GUI, no complexity.</p>
+  </div>
+
+  <div class="box box-what">
+    <div class="box-label">📌 UI Responsibility</div>
+    <p>The UI project is responsible only for <strong>displaying menus, reading input, formatting output, and calling application services</strong>. It must not contain business rules, file access, or domain decisions.</p>
+  </div>
+
+  <div class="srs-doc" style="margin-top:20px;">
+    <div class="srs-doc-header">
+      <div class="doc-title">Suggested Console Menu Tree</div>
+      <div class="doc-meta">
+        <span>Simple</span>
+        <span>Text-Based</span>
+        <span>Service-Driven</span>
+      </div>
+    </div>
+    <div class="srs-body">
+      <div class="srs-chapter">
+        <div class="srs-chapter-title">Main Menu</div>
+        <div class="prose" style="font-size:14px;">
+          <p>1. Branch Management</p>
+          <p>2. Employee &amp; Shift Management</p>
+          <p>3. Menu Management</p>
+          <p>4. Customer Management</p>
+          <p>5. Order Management</p>
+          <p>6. Inventory &amp; Recipe Management</p>
+          <p>7. Delivery Management</p>
+          <p>8. Feedback &amp; Reports</p>
+          <p>9. Seed/Load Data</p>
+          <p>0. Exit</p>
+        </div>
+      </div>
+      <div class="srs-chapter">
+        <div class="srs-chapter-title">UI Rules</div>
+        <div class="prose" style="font-size:14px;">
+          <p>The console should show <strong>clear prompts, short validation messages, formatted summaries, and confirmation screens</strong>.</p>
+          <p>The UI should be easy to demo in class: predictable menus, no hidden commands, and no duplicated formatting logic.</p>
+          <p>Console formatting helpers can live in the UI project and may use small extension methods for display formatting only.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     STEP 12 — PROJECT STRUCTURE
+══════════════════════════════════════════ -->
+<section class="sec" id="s12">
+<div class="wrap">
+  <div class="sec-header">
+    <div class="sec-step">Step 12 · Architecture</div>
+    <h2 class="sec-title">Project Structure</h2>
+    <p class="sec-sub">A clean three-project solution that keeps responsibilities separated without becoming complicated.</p>
+  </div>
+
+  <div class="box box-green">
+    <div class="box-label">✅ Final Architecture Decision</div>
+    <p>The solution will contain <strong>three basic projects only</strong>: <code>RestaurantChain.Core</code>, <code>RestaurantChain.Infrastructure</code>, and <code>RestaurantChain.UI</code>. This is enough to be professional while still staying simple for students.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="scope-block in">
+      <div class="scope-block-head">Project 1 · Core</div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains entities, value-like domain objects, enums, interfaces, and small factory methods</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains business rules and validation guards</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains service contracts and application-level abstractions if needed</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Must not know anything about files or console formatting</span></div>
+    </div>
+    <div class="scope-block in">
+      <div class="scope-block-head">Project 2 · Infrastructure</div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains file-based repositories and data source implementations</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains seed data loaders and starter sample data</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Responsible for reading and writing JSON, CSV, or text files</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Implements Core interfaces without leaking file details into the UI</span></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="scope-block in">
+      <div class="scope-block-head">Project 3 · UI</div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains menus, prompts, console styling, summaries, and flow control</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Calls application services and displays results to the user</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>Contains no persistence logic and no core business rules</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>May contain simple console formatting helpers and display-focused extension methods</span></div>
+    </div>
+    <div class="scope-block out">
+      <div class="scope-block-head">Reference Flow</div>
+      <div class="scope-block-item"><span class="si">→</span><span><code>UI</code> depends on <code>Core</code></span></div>
+      <div class="scope-block-item"><span class="si">→</span><span><code>Infrastructure</code> depends on <code>Core</code></span></div>
+      <div class="scope-block-item"><span class="si">→</span><span><code>Core</code> depends on nothing else</span></div>
+      <div class="scope-block-item"><span class="si">→</span><span>This preserves clean boundaries and supports SOLID without unnecessary complexity</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-label">Suggested Folders</div></div>
+
+  <div class="prose" style="background:#fff; border:1px solid var(--rule2); border-radius:var(--radius); padding:24px 28px; font-family:var(--mono); font-size:13px; line-height:1.8;">
+    <p>RestaurantChain.Core/</p>
+    <p>├─ Entities/</p>
+    <p>├─ Enums/</p>
+    <p>├─ Interfaces/</p>
+    <p>├─ Services/</p>
+    <p>├─ Factories/</p>
+    <p>└─ Extensions/</p>
+    <p style="margin-top:14px;">RestaurantChain.Infrastructure/</p>
+    <p>├─ FileStorage/</p>
+    <p>├─ Repositories/</p>
+    <p>├─ Seed/</p>
+    <p>└─ Extensions/</p>
+    <p style="margin-top:14px;">RestaurantChain.UI/</p>
+    <p>├─ Menus/</p>
+    <p>├─ Screens/</p>
+    <p>├─ Formatters/</p>
+    <p>├─ Input/</p>
+    <p>└─ Extensions/</p>
+  </div>
+
+  <div class="divider"><div class="divider-label">Implementation Notes</div></div>
+
+  <div class="box box-tip">
+    <div class="box-label">🛠️ Keep It Clean</div>
+    <p>Even with three projects, this remains a <strong>small solution</strong>. The purpose of the separation is clarity, not enterprise complexity. If a new abstraction does not clearly improve readability or maintainability, we should not add it.</p>
+    <p>Simple factory methods, interfaces at boundaries, extension methods for small helpers, and composition-first domain modeling are enough to produce a very clean professional result.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="page-footer">
+  Restaurant Chain Management System · OOP Case Study · Deliverables 01–12<br/>
+  <span>Problem Statement → SRS → Scope → Actors → User Stories → Business Rules → Use Cases → ERD → Class Diagram → OOP Mapping → Console Structure → Project Structure</span><br/>
+  <span style="color:var(--text-dim); margin-top:4px; display:block;">Architecture direction: Core + Infrastructure + UI · Composition first · KISS + SOLID</span>
+</footer>
+
+<script>
+// ── User Story Filter ──
+function filterUS(actor, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#usList .us-card').forEach(card => {
+    card.style.display = (actor === 'all' || card.dataset.actor === actor) ? 'block' : 'none';
+  });
+}
+
+// ── Collapsible Card Toggle ──
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.uc-chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.uc-body-inner').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.uc-chevron').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.uc-header').forEach(h => h.classList.remove('open'));
+  if (!isOpen) {
+    body.classList.add('open');
+    chevron.classList.add('open');
+    header.classList.add('open');
+  }
+}
+
+function toggleUC(header) {
+  toggleCard(header);
+}
+
+function togglePlan(header) {
+  toggleCard(header);
+}
+
+// ── Active Nav on Scroll ──
+const secs = document.querySelectorAll('.sec');
+const navLinks = document.querySelectorAll('.nav-a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(n => n.classList.remove('active'));
+      const link = document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+secs.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

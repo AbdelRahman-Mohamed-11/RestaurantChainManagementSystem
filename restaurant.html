@@ -1414,11 +1414,11 @@ body {
       <div class="srs-chapter">
         <div class="srs-chapter-num">Chapter 6</div>
         <div class="srs-chapter-title">Order Management Requirements</div>
-        <div class="srs-req"><div class="srs-req-id">SRS-19</div><div class="srs-req-text">The system shall allow creating orders of three types: Dine-In, Takeaway, and Delivery. Each order is linked to a branch, a customer, and a handling staff member.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-19</div><div class="srs-req-text">The system shall allow creating orders of three types: Dine-In, Takeaway, and Delivery. Each order is linked to a branch, a customer, and a handling staff member. In the implemented workflow, only a Waiter or Cashier from the same branch may place an order.</div></div>
         <div class="srs-req"><div class="srs-req-id">SRS-20</div><div class="srs-req-text">An order must contain at least one item. Each order item records the menu item, quantity (minimum 1), unit price at time of order, optional special notes, and any selected add-ons.</div></div>
         <div class="srs-req"><div class="srs-req-id">SRS-21</div><div class="srs-req-text">The unit price recorded on an order item must reflect the price at the time of placement, including any branch price override. It must not change if the global price is later updated.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-22</div><div class="srs-req-text">Order status follows a strict lifecycle: Pending → Preparing → Served → Completed. Cancellation is allowed from Pending status by any staff, and from Preparing status by a Branch Manager only.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-23</div><div class="srs-req-text">Payment can only be processed when an order is in Served status. Accepted payment methods are: Cash, Card, and Wallet. After payment, the order is marked Completed and cannot be changed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-22</div><div class="srs-req-text">Order status follows a strict lifecycle: Pending → Preparing → Served → Completed. In the implemented workflow, only a Chef from the same branch may move an order to Preparing or Served. Waiters and Cashiers may cancel Pending orders only, while a Branch Manager may cancel any non-completed, non-cancelled order that is not already out for delivery.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-23</div><div class="srs-req-text">Payment can only be processed when an order is in Served status. Accepted payment methods are: Cash, Card, and Wallet. In the implemented workflow, only a Cashier from the same branch may process payment. After payment, the order is marked Completed and cannot be changed.</div></div>
         <div class="srs-req"><div class="srs-req-id">SRS-24</div><div class="srs-req-text">Upon successful payment, the system shall automatically add loyalty points to the customer's account at a rate of one point per currency unit spent (rounded down).</div></div>
       </div>
 
@@ -1429,7 +1429,7 @@ body {
         <div class="srs-req"><div class="srs-req-id">SRS-25</div><div class="srs-req-text">Each branch shall maintain its own inventory of ingredients. An ingredient record has a name, unit (kg, liter, or piece), and current quantity. Quantities must be zero or greater.</div></div>
         <div class="srs-req"><div class="srs-req-id">SRS-26</div><div class="srs-req-text">Each menu item shall have a recipe that lists the ingredients required and the quantity of each ingredient needed per serving.</div></div>
         <div class="srs-req"><div class="srs-req-id">SRS-27</div><div class="srs-req-text">When an order status changes from Pending to Preparing, the system shall automatically deduct the required ingredient quantities from the branch inventory based on the recipe and the quantity of each item ordered.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-28</div><div class="srs-req-text">If a deduction would cause any ingredient to fall below a defined low-stock threshold, the system shall display a warning alert before confirming the status change.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-28</div><div class="srs-req-text">Each branch inventory item stores a low-stock threshold. In the implemented workflow, preparation is blocked when stock is insufficient to cover the recipe deduction unless a same-branch Branch Manager provides an override.</div></div>
       </div>
 
       <!-- Chapter 8 -->
@@ -1437,10 +1437,10 @@ body {
         <div class="srs-chapter-num">Chapter 8</div>
         <div class="srs-chapter-title">Delivery Requirements</div>
         <div class="srs-req"><div class="srs-req-id">SRS-29</div><div class="srs-req-text">Delivery staff profiles shall include a staff ID, vehicle type, license number, and assigned delivery area.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-30</div><div class="srs-req-text">A delivery order must have a non-empty delivery address. The system shall create a delivery record automatically when a delivery-type order is confirmed.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-31</div><div class="srs-req-text">A delivery record tracks: delivery ID, linked order, delivery address, assigned delivery staff, delivery timestamp, and status (On the Way, Delivered, Failed).</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-32</div><div class="srs-req-text">A delivery staff member may only be assigned to one active delivery at a time. They become available again when their delivery is marked Delivered or Failed.</div></div>
-        <div class="srs-req"><div class="srs-req-id">SRS-33</div><div class="srs-req-text">If a delivery fails, a reason must be recorded. The linked order shall be flagged for manager review.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-30</div><div class="srs-req-text">A delivery order must have a non-empty delivery address. The system shall create a delivery record automatically when a delivery-type order is confirmed. Non-delivery orders must not have a delivery record.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-31</div><div class="srs-req-text">A delivery record tracks: delivery ID, delivery address, assigned delivery staff, delivery timestamp, failure reason, and status (Awaiting Assignment, On the Way, Delivered, Failed).</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-32</div><div class="srs-req-text">A delivery staff member may only be assigned to one active delivery at a time. Assignment is allowed only after the order reaches Served status, and the selected delivery staff member must be available and belong to the same branch. They become available again when their delivery is marked Delivered or Failed.</div></div>
+        <div class="srs-req"><div class="srs-req-id">SRS-33</div><div class="srs-req-text">If a delivery fails, a reason must be recorded and the linked order is cancelled. If a delivery is marked Delivered, the linked order is completed automatically.</div></div>
       </div>
 
       <!-- Chapter 9 -->
@@ -1521,11 +1521,11 @@ body {
   <div class="divider"><div class="divider-label">Assumptions — Filling SRS Gaps</div></div>
 
   <div class="assumption-row"><div class="assumption-num">A-01</div><div class="assumption-text">The SRS says employees can work at multiple branches but doesn't define a "primary branch." We assume each employee has <strong>one primary branch</strong> stored on their profile, and all other branches are accessed through shift records only.</div></div>
-  <div class="assumption-row"><div class="assumption-num">A-02</div><div class="assumption-text">SRS-27 says inventory is deducted when an order moves to Preparing, but doesn't say what happens if inventory is insufficient. We assume the system <strong>shows a warning but allows the manager to override and proceed</strong>. The operation is not automatically blocked.</div></div>
-  <div class="assumption-row"><div class="assumption-num">A-03</div><div class="assumption-text">SRS-28 says "low-stock threshold" but doesn't define it. We assume a <strong>default threshold of 5 units</strong> per ingredient. Branch managers can update this value per ingredient.</div></div>
-  <div class="assumption-row"><div class="assumption-num">A-04</div><div class="assumption-text">SRS-24 says loyalty points are awarded at payment, but doesn't say when delivery orders are paid. We assume delivery orders are also paid through the cashier console, after the delivery is confirmed as Delivered.</div></div>
-  <div class="assumption-row"><div class="assumption-num">A-05</div><div class="assumption-text">The SRS does not specify who manages customers. We assume <strong>any branch staff (Waiter, Cashier)</strong> can register or look up customer profiles.</div></div>
-  <div class="assumption-row"><div class="assumption-num">A-06</div><div class="assumption-text">The SRS doesn't mention user login. We assume there is a <strong>simple role-based menu system</strong>: the user selects their role (Admin, Manager, Waiter, etc.) when starting a session. No real authentication is required for this version.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-02</div><div class="assumption-text">When stock is insufficient for the Pending → Preparing transition, the operation is <strong>blocked by default</strong>. A same-branch Branch Manager may explicitly override the shortage and allow preparation to continue.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-03</div><div class="assumption-text">The implementation stores a <strong>low-stock threshold per inventory item</strong>. No hard-coded default value is enforced in the current code; the threshold comes from the saved inventory data.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-04</div><div class="assumption-text">In the current implementation, a delivery order is <strong>completed automatically when the assigned driver marks it Delivered</strong>. There is no extra post-delivery cashier payment step in that path.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-05</div><div class="assumption-text">The system does not define a separate customer-management department. In the current workflow, <strong>Branch Managers, Waiters, and Cashiers</strong> can view customers and register new customer profiles.</div></div>
+  <div class="assumption-row"><div class="assumption-num">A-06</div><div class="assumption-text">The system uses a <strong>simple employee-ID login selection</strong>. Users choose an existing employee record to enter the menu for that employee's role. No password-based authentication is implemented in this version.</div></div>
   <div class="assumption-row"><div class="assumption-num">A-07</div><div class="assumption-text">The SRS mentions "Delivery Staff" separately from other employees. We assume <strong>Delivery Staff is a type of employee</strong> with additional delivery-specific attributes (vehicle, license, area) stored separately.</div></div>
 
 </div>
@@ -1663,7 +1663,7 @@ body {
     <p><strong>Step 1 — Read each SRS requirement.</strong> Ask: does this require an actor to actively do something? If yes → it is a candidate user story.</p>
     <p><strong>Step 2 — Assign the correct actor</strong> from the Actors table you already built.</p>
     <p><strong>Step 3 — Write the story</strong> using the template. The "so that" part comes from the business purpose in the SRS chapter title or the surrounding context.</p>
-    <p><strong>Step 4 — Add validations.</strong> These come from the SRS requirement itself (e.g., SRS-10: "salary must be positive") and from your Assumptions table (e.g., A-03: low-stock threshold = 5).</p>
+    <p><strong>Step 4 — Add validations.</strong> These come from the SRS requirement itself (e.g., SRS-10: "salary must be positive") and from your Assumptions table (e.g., A-03: inventory thresholds are stored per item and validated by the workflow).</p>
   </div>
 
   <div class="derivation-steps">
@@ -1828,8 +1828,8 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-19: order type = Delivery · SRS-30: must have a delivery address; delivery record auto-created · SRS-32: delivery staff must be available · Assumption A-04</div></div>
-        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Delivery address is mandatory and cannot be empty</li><li>At least one delivery staff must be available</li><li>Delivery record is auto-created upon order save</li></ul></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-19: only Waiter/Cashier can place orders · SRS-30: delivery orders require an address and auto-create a delivery record · SRS-32: driver assignment happens later after the order reaches Served</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Only a Waiter or Cashier can place the order</li><li>Actor must belong to the same branch as the order</li><li>Delivery address is mandatory and cannot be empty</li><li>Delivery record is auto-created upon order save</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order · Delivery</span></div>
     </div>
@@ -1845,8 +1845,8 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: status lifecycle Pending → Preparing · SRS-27: inventory deducted on this transition · SRS-28: low-stock warning before confirmation · Assumption A-02</div></div>
-        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must currently be in "Pending" status</li><li>System checks inventory before transition</li><li>Warning shown if any ingredient falls below threshold (A-03)</li><li>Manager override required if insufficient stock (A-02)</li></ul></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: only Chef advances kitchen status · SRS-27: inventory deducted on Pending → Preparing · SRS-28: shortage blocks preparation unless manager override is provided</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Order must currently be in "Pending" status</li><li>Only a Chef from the same branch can perform the transition</li><li>System checks inventory before transition</li><li>Manager override is required if stock is insufficient</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Order · Inventory</span></div>
     </div>
@@ -1896,7 +1896,7 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: cancellation allowed from Pending by any staff. From Preparing only by Branch Manager.</div></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-22: Waiters and Cashiers cancel Pending orders only; Branch Managers may cancel broader in-progress orders that are not already out for delivery.</div></div>
         <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Only Pending orders can be cancelled by Waiters</li><li>Cancelled orders cannot be re-opened</li><li>A cancellation reason must be entered</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Order</span></div>
@@ -1913,8 +1913,8 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-31: delivery status = On the Way / Delivered / Failed · SRS-32: one active delivery at a time · SRS-33: failure requires a reason</div></div>
-        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Staff can only update their own delivery</li><li>Only On the Way → Delivered OR On the Way → Failed is valid</li><li>Delivered sets timestamp to now (SRS-31)</li><li>Failed requires a reason to be entered (SRS-33)</li></ul></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-31: delivery status and delivery timestamp · SRS-32: one active delivery at a time · SRS-33: failure requires a reason; delivered completes the order, failed cancels it</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Staff can only update their own assigned delivery</li><li>Only Delivered or Failed can be set manually from the active delivery state</li><li>Delivered sets timestamp to now and completes the order</li><li>Failed requires a reason and cancels the order</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Delivery</span></div>
     </div>
@@ -1930,8 +1930,8 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-25: branch inventory with name, unit, current quantity · SRS-28: low-stock threshold alert · Assumption A-03: threshold default = 5 units</div></div>
-        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Quantity must be ≥ 0</li><li>Unit cannot be changed after creation</li><li>Ingredients below threshold (default 5) shown with a warning</li></ul></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-25: branch inventory with current quantity and threshold · SRS-28: threshold is stored per inventory item in the current implementation</div></div>
+        <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Quantity must be ≥ 0</li><li>Low-stock threshold must be ≥ 0</li><li>Inventory values are branch-specific</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-h">High</span><span class="us-tag tag-cat">Inventory</span></div>
     </div>
@@ -1981,7 +1981,7 @@ body {
         </div>
       </div>
       <div class="us-card-bottom">
-        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-23: Completed orders have a total amount. SRS-01: system supports multiple branches (implies per-branch reporting). Assumption A-06: role-based access.</div></div>
+        <div class="us-source"><div class="us-section-label">SRS Source</div><div class="us-source-text">SRS-23: Completed orders have a total amount. SRS-01: system supports multiple branches (implies per-branch reporting). Assumption A-06: employee-ID based role access in the current console flow.</div></div>
         <div class="us-validation"><div class="us-section-label">Validations</div><ul class="us-val-list"><li>Date range: start must be ≤ end</li><li>Only Completed orders are counted</li><li>Report is limited to the manager's own branch</li><li>If no data found, display "No orders found" — not a zero-row table</li></ul></div>
       </div>
       <div class="us-meta-bar"><span class="us-tag prio-m">Medium</span><span class="us-tag tag-cat">Reporting</span></div>
@@ -2033,7 +2033,7 @@ body {
     <div class="br-row"><div class="br-id">BR-02</div><div class="br-body">Employee position must be one of the five defined values: Chef, Waiter, Cashier, Branch Manager, Delivery Staff. Free-text positions are rejected. <em>(SRS-07)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
     <div class="br-row"><div class="br-id">BR-03</div><div class="br-body">An employee's <strong>salary must be a positive number</strong> and their <strong>date of hire cannot be a future date</strong>. <em>(SRS-10)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
     <div class="br-row"><div class="br-id">BR-04</div><div class="br-body">An employee <strong>cannot have two overlapping shifts on the same date</strong>, whether at the same or different branch. <em>(SRS-09)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
-    <div class="br-row"><div class="br-id">BR-05</div><div class="br-body">A branch cannot be deleted if it still has employees assigned to it or active orders linked to it. <em>(SRS-08, Referential Integrity)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+    <div class="br-row"><div class="br-id">BR-05</div><div class="br-body">A shift must have a valid time range: <strong>end time must be after start time</strong>. Delivery profiles are allowed only for Delivery Staff employees, and every Delivery Staff employee must have one. <em>(SRS-09, SRS-29)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
   </div>
 
   <!-- Menu -->
@@ -2047,11 +2047,11 @@ body {
   <!-- Order -->
   <div class="br-group">
     <div class="br-group-heading">📋 Order Rules</div>
-    <div class="br-row"><div class="br-id">BR-09</div><div class="br-body">An order must contain <strong>at least one order item</strong> before it can be saved. An empty order is invalid. <em>(SRS-20)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
-    <div class="br-row"><div class="br-id">BR-10</div><div class="br-body">Order status can only advance forward: <strong>Pending → Preparing → Served → Completed</strong>. The only exceptions are cancellation (Pending by staff, Preparing by manager only). <em>(SRS-22)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-09</div><div class="br-body">An order must contain <strong>at least one order item</strong> before it can be saved, and each order item quantity must be <strong>at least 1</strong>. <em>(SRS-20)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-10</div><div class="br-body">Only a <strong>Waiter or Cashier</strong> from the same branch can place an order. Only a <strong>Chef</strong> from the same branch can move an order to Preparing or Served. <em>(SRS-19, SRS-22)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
     <div class="br-row"><div class="br-id">BR-11</div><div class="br-body">The unit price stored on an order item is a <strong>snapshot of the price at placement time</strong>, including any branch override. Any selected add-on prices are also stored as snapshots at order time. Future catalogue changes must not alter existing orders. <em>(SRS-21)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
     <div class="br-row"><div class="br-id">BR-12</div><div class="br-body"><strong>Delivery orders</strong> require a non-empty delivery address. Dine-in and takeaway orders must never have a delivery record. <em>(SRS-30)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
-    <div class="br-row"><div class="br-id">BR-13</div><div class="br-body">Payment can only be processed when the order status is <strong>Served</strong>. After payment the order is Completed and immutable. <em>(SRS-23)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-13</div><div class="br-body">Payment can only be processed when the order status is <strong>Served</strong>, and only a <strong>Cashier from the same branch</strong> may process it. Delivery orders are completed automatically when the assigned driver marks them Delivered. <em>(SRS-23, SRS-33)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
   </div>
 
   <!-- Inventory -->
@@ -2059,17 +2059,17 @@ body {
     <div class="br-group-heading">🥕 Inventory &amp; Recipe Rules</div>
     <div class="br-row"><div class="br-id">BR-14</div><div class="br-body">Inventory is <strong>branch-specific</strong>. The same ingredient at Branch A and Branch B is tracked independently. <em>(SRS-25)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
     <div class="br-row"><div class="br-id">BR-15</div><div class="br-body">Inventory <strong>auto-deducts on Pending → Preparing</strong> based on recipe quantities × ordered quantities. <em>(SRS-27)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
-    <div class="br-row"><div class="br-id">BR-16</div><div class="br-body">Inventory quantity <strong>cannot be set below zero</strong>. If a deduction would cause this, a warning is shown before the transition is confirmed. Manager override is required to proceed. <em>(SRS-28, A-02)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
-    <div class="br-row"><div class="br-id">BR-17</div><div class="br-body">An ingredient cannot appear <strong>more than once in the same recipe</strong>. Each ingredient entry in a recipe must be unique. <em>(SRS-26)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
+    <div class="br-row"><div class="br-id">BR-16</div><div class="br-body">Inventory quantity <strong>cannot go below zero</strong>. If recipe deduction would make stock negative, the chef cannot proceed unless a <strong>same-branch Branch Manager</strong> provides an override. <em>(SRS-28, A-02)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+    <div class="br-row"><div class="br-id">BR-17</div><div class="br-body">An ingredient cannot appear <strong>more than once in the same recipe</strong>, and recipe quantities per serving must be <strong>greater than zero</strong>. <em>(SRS-26)</em></div><div class="br-type"><span class="br-badge br-data">Data Rule</span></div></div>
   </div>
 
   <!-- Delivery & Feedback -->
   <div class="br-group">
     <div class="br-group-heading">🚚 Delivery &amp; Feedback Rules</div>
-    <div class="br-row"><div class="br-id">BR-18</div><div class="br-body">A delivery staff member can only be assigned to <strong>one active delivery</strong> at a time. They become available again when status changes to Delivered or Failed. <em>(SRS-32)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
-    <div class="br-row"><div class="br-id">BR-19</div><div class="br-body">A failed delivery must have a <strong>reason recorded</strong> before the status can be saved as Failed. The linked order is flagged for manager review. <em>(SRS-33)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
-    <div class="br-row"><div class="br-id">BR-20</div><div class="br-body">Only <strong>one feedback record</strong> per order per customer is allowed. Submitting a second feedback for the same order must be rejected. <em>(SRS-35)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
-    <div class="br-row"><div class="br-id">BR-21</div><div class="br-body"><strong>Loyalty points = floor(total amount)</strong>. Points are awarded automatically at payment. Points only increase, never decrease. <em>(SRS-24)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
+    <div class="br-row"><div class="br-id">BR-18</div><div class="br-body">A delivery staff member can only be assigned to <strong>one active delivery</strong> at a time. Assignment is allowed only for <strong>served delivery orders</strong>, by a Waiter, Cashier, or Branch Manager, and the driver must be available and belong to the same branch. <em>(SRS-32)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-19</div><div class="br-body">Only the <strong>assigned delivery staff member</strong> can update that delivery. A failed delivery must have a <strong>reason recorded</strong>; Delivered completes the order, while Failed cancels it. <em>(SRS-33)</em></div><div class="br-type"><span class="br-badge br-required">Required</span></div></div>
+    <div class="br-row"><div class="br-id">BR-20</div><div class="br-body">Only <strong>one feedback record</strong> per order per customer is allowed. Feedback can only be submitted by the <strong>same customer who owns the order</strong>, and only after the order is Completed. <em>(SRS-35)</em></div><div class="br-type"><span class="br-badge br-business">Business</span></div></div>
+    <div class="br-row"><div class="br-id">BR-21</div><div class="br-body"><strong>Loyalty points = floor(total amount)</strong>. Points are awarded automatically on the <strong>cashier payment path</strong> and only increase, never decrease. <em>(SRS-24, SRS-23)</em></div><div class="br-type"><span class="br-badge br-system">System</span></div></div>
   </div>
 
 </div>
